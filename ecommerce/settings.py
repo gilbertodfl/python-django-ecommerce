@@ -119,6 +119,22 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+"""
+Fluxo resumido:
+
+Usuário faz upload de foto.jpg
+Django salva fisicamente em: BASE_DIR/media/foto.jpg → (MEDIA_ROOT)
+Arquivo fica acessível via: http://seusite.com/imagens/foto.jpg → (MEDIA_URL)
+"""
+## Define o caminho físico no servidor onde os arquivos enviados pelos usuários serão salvos.
+#  No exemplo, cria uma pasta media/ dentro do diretório raiz do projeto
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+## Define o prefixo da URL pública para acessar esses arquivos no navegador. 
+# Com 'images/', um arquivo salvo seria acessível em algo como http://seusite.com/images/foto.jpg.
+MEDIA_URL='images/'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
