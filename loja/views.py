@@ -2,7 +2,11 @@ from django.shortcuts import render
 from  .models import * 
 # Create your views here.
 def homepage(request):
-    return render(request, 'homepage.html')
+    banners = Banner.objects.filter(ativo=True)
+    context = {
+        'banners': banners
+    }
+    return render(request, 'homepage.html', context)
 
 def loja(request):
     produtos = Produto.objects.all()

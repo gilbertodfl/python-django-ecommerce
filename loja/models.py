@@ -61,3 +61,11 @@ class ItensPedido(models.Model):
 
 
 
+class Banner(models.Model):
+    ativo = models.BooleanField(default=True)
+    imagem =  models.ImageField(null=True, blank=True) # "banner.png"
+    link_destino= models.CharField(max_length=200, null=True, blank=True)
+    
+    def __str__(self):
+        return f"Link: {self.link_destino}, Ativo: {self.ativo}"
+        
