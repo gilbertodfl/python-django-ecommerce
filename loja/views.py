@@ -8,8 +8,16 @@ def homepage(request):
     }
     return render(request, 'homepage.html', context)
 
-def loja(request):
-    produtos = Produto.objects.all()
+def loja(request, nome_categoria=None):
+    
+    if nome_categoria:
+        categoria= Categoria
+        ## Aqui ele consegue fazer o joiner e o filtro porque estamos usando __ e o proprio nome 
+        ## mais detalhes veja no .models
+        produtos = produtos.filter(categoria__nome=nome_categoria,ativo=True)
+    else:
+        produtos = Produto.objects.all(ativo=True)
+    
     context={
         'produtos': produtos
     }
