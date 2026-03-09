@@ -16,18 +16,21 @@
         {% for cor in cores %}
            <a href="{% url 'ver_produto' produto.id  cor.id %}">
                 <i class="fa-solid fa-circle" style="color: {{ cor.codigo }}"></i> 
+
             </a>                
         {% endfor %}
 
         {% if tamanhos %}
-            <p>Tamanhos disponíveis:</p>
-            <ul>
-                {% for tamanho in tamanhos %}
-                    <li>{{ tamanho.nome }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Sem tamanhos disponíveis</p>
+            <form method="post" action="{% url 'adicionar_carrinho' produto.id %}">
+                {% csrf_token %}    
+                <p>Tamanhos disponíveis:</p>
+                    {% for tamanho in tamanhos %}
+                        <input type="radio" id="tamanho" name="tamanho" value="{{ tamanho }}">
+                        <label for ="tamanho">{{ tamanho }}</label><br>
+                        
+                    {% endfor %}
+                <button type="submit">Adicionar ao carrinho</button>
+            </form>
         {% endif %}
 
     </div>
