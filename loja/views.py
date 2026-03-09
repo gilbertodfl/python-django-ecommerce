@@ -27,9 +27,9 @@ def ver_produto(request, id_produto, id_cor=None):
     tem_estoque = False
     cores = {}
     tamanhos = {}
-    nome_cor_selecionada = None
+    cor_selecionada = None
     if id_cor:
-        nome_cor_selecionada = Cor.objects.get(id=id_cor).nome
+        cor_selecionada = Cor.objects.get(id=id_cor)
 
     produto = Produto.objects.get(id=id_produto)
     itens_estoque = ItemEstoque.objects.filter(produto=produto, quantidade__gt=0)
@@ -46,25 +46,18 @@ def ver_produto(request, id_produto, id_cor=None):
         'tem_estoque': tem_estoque,
         'cores': cores,
         'tamanhos': tamanhos,
-        'nome_cor_selecionada': nome_cor_selecionada
+        'cor_selecionada': cor_selecionada
 
     }   
     return render(request, 'ver_produto.html', context)
 
 def adicionar_carrinho(request, id_produto):
-    if request.method == 'POST':
-        # id_cor = request.POST.get('cor')
-        # id_tamanho = request.POST.get('tamanho')
-        # quantidade = int(request.POST.get('quantidade', 1))
-        # produto = Produto.objects.get(id=id_produto)
-        # cor = Cor.objects.get(id=id_cor)
-        # tamanho = Tamanho.objects.get(id=id_tamanho)
-        # item_estoque = ItemEstoque.objects.filter(produto=produto, cor=cor, tamanho=tamanho).first()
-        # if item_estoque and item_estoque.quantidade >= quantidade:
-        #     # Lógica para adicionar o item ao carrinho (a ser implementada)
-        #     pass
-        # else:
-        #     # Lógica para lidar com estoque insuficiente (a ser implementada)
+    if request.method == 'POST' and  id_produto:
+        dados = request.POST.dict()
+        tamanho = dados.get('tamanho')
+        print(dados)
+        if not tamanho:
+            return redirect('ver_produto', id_produto=id_produto)
         print("Adicionar ao carrinho: Produto ID:", id_produto)
         return redirect('carrinho')
     else:

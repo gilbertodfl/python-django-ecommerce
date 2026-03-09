@@ -7,8 +7,8 @@
     <div class="produto">
         <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" width="300" height="450">
         <p>Preço: R$ {{ produto.preco }}</p>
-        {% if nome_cor_selecionada %}
-            <p>Cor selecionada: {{ nome_cor_selecionada }}</p>
+        {% if cor_selecionada %}
+            <p>Cor selecionada: {{ cor_selecionada.nome_cor_selecionada }}</p>
         {%else%}    
             <p>Sem cor selecionada</p>
         {% endif %} 
@@ -29,6 +29,7 @@
                         <label for ="tamanho">{{ tamanho }}</label><br>
                         
                     {% endfor %}
+                <input type="hidden" name="cor_id" value="{{ cor_selecionada.id }}">                  
                 <button type="submit">Adicionar ao carrinho</button>
             </form>
         {% endif %}
