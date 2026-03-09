@@ -7,7 +7,9 @@
     {% for produto in produtos %}
 
         <div class="produto">
-            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" width="200" height="200">
+            <a href="{% url 'ver_produto' produto.id %}">
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" width="200" height="200">
+            </a>
             <h4>{{ produto.nome }}</h4>
             <p>Preço: R$ {{ produto.preco }}</p>
 

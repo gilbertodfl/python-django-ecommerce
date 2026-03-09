@@ -24,7 +24,7 @@ PASSO 01: criar tabela no models: class Banner(models.Model)
        ativo = models.BooleanField(default=True)
        imagem =  models.ImageField(null=True, blank=True) # "banner.png"
        link_destino= models.CharField(max_length=200, null=True, blank=True)
-       
+
        def __str__(self):
            return f"Link: {self.link_destino}, Ativo: {self.ativo}"
 ```
@@ -37,7 +37,6 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 ```
 
-  
 PASSO 03: Fazer aparecer no admin do django  
    Registrar no admin.py para aparecer no admin django  
    admin.site.register(Banner)  
@@ -52,7 +51,6 @@ def homepage(request):
    return render(request, 'homepage.html', context)
 ```
 
-  
 PASSO 05: Agora no html ele já fica visivel:
 
 ```plaintext
@@ -63,3 +61,11 @@ PASSO 05: Agora no html ele já fica visivel:
    </div>
 {% endfor %}
 ```
+
+TABELAS DE CORES: 
+
+[https://www.homehost.com.br/blog/tutoriais/tabela-de-cores-html/](https://www.homehost.com.br/blog/tutoriais/tabela-de-cores-html/)
+
+QUERYSETS DJANGO: vale à pena da uma olhada. 
+
+[https://docs.djangoproject.com/en/6.0/ref/models/querysets/](https://docs.djangoproject.com/en/6.0/ref/models/querysets/)
