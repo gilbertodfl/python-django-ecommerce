@@ -69,3 +69,13 @@ TABELAS DE CORES: 
 QUERYSETS DJANGO: vale à pena da uma olhada. 
 
 [https://docs.djangoproject.com/en/6.0/ref/models/querysets/](https://docs.djangoproject.com/en/6.0/ref/models/querysets/)
+
+Veja o exemplo de quantidade > 0. Usasse \_\_gt e tem muitos outros: itens\_estoque = ItemEstoque.objects.filter(\_produto\_=produto, \_quantidade\_\_gt\_=0)
+
+### FONT-AWESOME
+
+[https://cdnjs.com/libraries/font-awesome](https://cdnjs.com/libraries/font-awesome)
+
+Adicione o link abaixo no seu base.html
+
+\<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
