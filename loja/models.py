@@ -62,11 +62,32 @@ class Pedido(models.Model):
     codigo_transacao = models.CharField(max_length=200, null=True, blank=True)
     endereco = models.ForeignKey(Endereco, null=True, blank=True, on_delete=models.SET_NULL)
     data_finalizacao = models.DateTimeField(null=True, blank=True)
+    def __str__(self):
+        return f"Cliente: {self.cliente.email }, Finalizado: {self.finalizado}, pedido: {self.id}, Código Transação: {self.codigo_transacao},"
+
+    @property
+    def quantidade_total(self):
+       itens_pedido = ItensPedido.objects.filter(pedido__id=self.id) 
+       return sum(item.quantidade for item in itens_pedido)
+
+    @property
+    def preco_total(self):
+       itens_pedido = ItensPedido.objects.filter(pedido__id=self.id) 
+       return sum(item.preco_total for item in itens_pedido)
+
+
 
 class ItensPedido(models.Model):
     item_estoque = models.ForeignKey(ItemEstoque, null=True, blank=True, on_delete=models.SET_NULL)
     quantidade = models.IntegerField(default=0)
     pedido = models.ForeignKey(Pedido, null=True, blank=True, on_delete=models.SET_NULL)
+    def __str__(self):
+        return f"Pedido: {self.pedido.id}, Item: {self.item_estoque.produto.nome}, Cor: {self.item_estoque.cor.nome}, Tamanho: {self.item_estoque.tamanho}, Quantidade: {self.quantidade}"
+    @property
+    def preco_total(self):
+        if self.item_estoque and self.item_estoque.produto:
+            return self.quantidade * self.item_estoque.produto.preco
+        return 0
 
 
 
