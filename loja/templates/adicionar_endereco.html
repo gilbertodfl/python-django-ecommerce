@@ -6,7 +6,7 @@
 <div class="container">
     <h2>Adicionar Endereço</h2>
 
-    <form method="post">
+    <form method="post" action="{% url 'adicionar_endereco' %}">
         {% csrf_token %}
 
         <div>

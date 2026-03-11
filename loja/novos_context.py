@@ -33,3 +33,9 @@ Veja o mesmo acontece com itens_pedido = ItensPedido.objects.filter(pedido=pedid
 Onde pedido é a foreignkey do modelo ItensPedido, e o pedido é o objeto Pedido que você obteve com o get_or_create. 
 O Django ORM converte isso para WHERE pedido_id = pedido.pk.
 """
+
+def categorias_tipos(request):
+    from .models import Categoria, Tipo
+    categorias = Categoria.objects.all()
+    tipos = Tipo.objects.all()
+    return {'categorias': categorias, 'tipos': tipos}
