@@ -63,9 +63,23 @@ def adicionar_carrinho(request, id_produto):
         
         if not id_cor or not tamanho:
             return redirect('ver_produto', id_produto=id_produto)
+        resposta = redirect('carrinho')            
         if request.user.is_authenticated:   
             print('entrei no authenticated')
             cliente = request.user.cliente
+        else:
+            ## aqui vamos gerar um id de sessão para o usuário não autenticado, e armazenar os itens do carrinho em uma 
+            # estrutura de dados associada a esse id de sessão.
+
+            if request.COOKIES.get('id_sessao'):
+                id_sessao = request.COOKIES.get('id_sessao')
+            else:
+                id_sessao = str(uuid.uuid4())
+                cliente, criado = Cliente.objects.get_or_create(id_sessao=id_sessao)
+                cliente.save()
+                resposta.set_cookie(key='id_sessao',value=id_sessao, max_age=30*24*60*60)  # Cookie válido por 30 dias
+                resposta = redirect('loja')
+
             pedido, criado = Pedido.objects.get_or_create(cliente=cliente, finalizado=False)
             item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
             print( pedido)
@@ -82,18 +96,8 @@ def adicionar_carrinho(request, id_produto):
                 itens_pedido.save()
                 item_estoque.quantidade -= 1
                 item_estoque.save()
-        else:
-            ## aqui vamos gerar um id de sessão para o usuário não autenticado, e armazenar os itens do carrinho em uma 
-            # estrutura de dados associada a esse id de sessão.
-            if request.COOKIES.get('id_sessao'):
-                id_sessao = request.COOKIES.get('id_sessao')
-            else:
-                id_sessao = str(uuid.uuid4())
-            resposta = redirect('loja')
-            resposta.set_cookie(key='id_sessao',value=id_sessao, max_age=30*24*60*60)  # Cookie válido por 30 dias
-            return resposta
 
-        return redirect('carrinho')
+        return resposta
     else:
         return redirect('loja')
     
