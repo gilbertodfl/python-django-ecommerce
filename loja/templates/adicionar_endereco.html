@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<a href="{% url 'checkout' %}">Voltar para o checkout</a>
+<div class="container">
+    <h2>Adicionar Endereço</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div>
+            <label for="rua">Rua</label><br>
+            <input type="text" id="rua" name="rua" value="{{ endereco.rua|default_if_none:'' }}">
+        </div>
+
+        <div>
+            <label for="numero">Número</label><br>
+            <input type="number" id="numero" name="numero" value="{{ endereco.numero|default_if_none:'' }}">
+        </div>
+
+        <div>
+            <label for="complemento">Complemento</label><br>
+            <input type="text" id="complemento" name="complemento" value="{{ endereco.complemento|default_if_none:'' }}">
+        </div>
+
+        <div>
+            <label for="cep">CEP</label><br>
+            <input type="text" id="cep" name="cep" value="{{ endereco.cep|default_if_none:'' }}">
+        </div>
+
+        <div>
+            <label for="cidade">Cidade</label><br>
+            <input type="text" id="cidade" name="cidade" value="{{ endereco.cidade|default_if_none:'' }}">
+        </div>
+
+        <div>
+            <label for="estado">Estado</label><br>
+            <input type="text" id="estado" name="estado" value="{{ endereco.estado|default_if_none:'' }}">
+        </div>
+
+        <br>
+        <button type="submit">Salvar endereço</button>
+    </form>
+
+    <br>
+
+</div>
+{% endblock %}
