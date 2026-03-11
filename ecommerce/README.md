@@ -78,4 +78,25 @@ Veja o exemplo de quantidade > 0. Usasse \_\_gt e tem muitos outros: itens\_esto
 
 Adicione o link abaixo no seu base.html
 
-\<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+\<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+### DJANDO E SESSÕES DE NAVEGADOR ( cookies ) 
+
+### Como funciona o fluxo básico
+
+1.  **Usuário acessa o site** → Django cria uma sessão no servidor e gera um **Session ID** único
+2.  **Django envia um cookie** chamado `sessionid` para o navegador
+3.  **Nas próximas requisições**, o navegador envia esse cookie automaticamente
+4.  **Django usa o Session ID** para buscar os dados da sessão armazenados no servido
+
+Django cuida de tudo via `request.session` como um dicionário Python simples
+
+```plaintext
+resposta.set_cookie(key='id_sessao',value=id_sessao, max_age=30*24*60*60) # Cookie válido por 30 dias
+```
+
+_outra opção é colocar a opção expires_
+
+```plaintext
+from datetime import datetime request.session.set_expiry(datetime(2026, 12, 31, 23, 59))
+```

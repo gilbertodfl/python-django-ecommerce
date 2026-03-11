@@ -8,6 +8,8 @@ class Cliente(models.Model):
     telefone = models.CharField(max_length=200, null=True, blank=True)
     id_sessao = models.CharField(max_length=200, null=True, blank=True)
     usuario = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+    def __str__(self):
+        return super().__str__() + f"Cliente: {self.nome}, Email: {self.email}, Telefone: {self.telefone}, Sessão: {self.id_sessao}"
 
 class Categoria(models.Model): # Categorias (Masculino, Feminino, Infantil)
     nome = models.CharField(max_length=200, null=True, blank=True)
@@ -55,6 +57,8 @@ class Endereco(models.Model):
     cidade = models.CharField(max_length=200, null=True, blank=True)
     estado = models.CharField(max_length=200, null=True, blank=True)
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL)
+    def __str__(self):
+        return f"Cliente: {self.cliente.email}, Rua: {self.rua}, Número: {self.numero}, Complemento: {self.complemento}, CEP: {self.cep}, Cidade: {self.cidade}, Estado: {self.estado}"
 
 class Pedido(models.Model):
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL)
