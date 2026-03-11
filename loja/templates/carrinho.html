@@ -4,62 +4,68 @@
 {% block body %}
 
 <h3>Carrinho</h3>
-<h4>Numero Pedidos: {{ pedido.id }}</h4>
-Preço total Pedido: {{ pedido.preco_total }}
-<p> Quantidade de itens : {{ pedido.quantidade_total }}</p>
+{% if cliente_existente %}
+  <h4>Numero Pedidos: {{ pedido.id }}</h4>
+  Preço total Pedido: {{ pedido.preco_total }}
+  <p> Quantidade de itens : {{ pedido.quantidade_total }}</p>
 
-{% for item in itens_pedido %}
-<div style="display: flex; align-items: center; gap: 16px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.06); max-width: 480px;">
-  
-    <!-- Imagem à esquerda -->
-    <img 
-      src="{{ item.item_estoque.produto.imagem.url }}" 
-      alt="{{ item.item_estoque.produto.nome }}" 
-      width="80" 
-      height="80"
-      style="border-radius: 8px; object-fit: cover; flex-shrink: 0;"
-    >
-  
-    <!-- Detalhes à direita -->
-    <div style="display: flex; flex-direction: column; gap: 4px; font-family: sans-serif; font-size: 14px; color: #374151;">
-      <p style="margin: 0; font-weight: 700; font-size: 15px; color: #111827;">{{ item.item_estoque.produto.nome }}</p>
-      <p style="margin: 0; color: #6b7280;">Cor: <span style="color: #374151;">{{ item.item_estoque.cor.nome }}</span></p>
-      <p style="margin: 0; color: #6b7280;">Tamanho: <span style="color: #374151;">{{ item.item_estoque.tamanho }}</span></p>
+  {% for item in itens_pedido %}
+  <div style="display: flex; align-items: center; gap: 16px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.06); max-width: 480px;">
+    
+      <!-- Imagem à esquerda -->
+      <img 
+        src="{{ item.item_estoque.produto.imagem.url }}" 
+        alt="{{ item.item_estoque.produto.nome }}" 
+        width="80" 
+        height="80"
+        style="border-radius: 8px; object-fit: cover; flex-shrink: 0;"
+      >
+    
+      <!-- Detalhes à direita -->
+      <div style="display: flex; flex-direction: column; gap: 4px; font-family: sans-serif; font-size: 14px; color: #374151;">
+        <p style="margin: 0; font-weight: 700; font-size: 15px; color: #111827;">{{ item.item_estoque.produto.nome }}</p>
+        <p style="margin: 0; color: #6b7280;">Cor: <span style="color: #374151;">{{ item.item_estoque.cor.nome }}</span></p>
+        <p style="margin: 0; color: #6b7280;">Tamanho: <span style="color: #374151;">{{ item.item_estoque.tamanho }}</span></p>
 
-      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
 
-      <p style="margin: 0; color: #6b7280;">Quantidade: <span style="color: #374151;">
-            <form method="post" action="{% url 'remover_carrinho' item.id %}">
-             {% csrf_token %}    
-             <input type="hidden" name="tamanho" value="{{ item.item_estoque.tamanho }}">                  
+        <p style="margin: 0; color: #6b7280;">Quantidade: <span style="color: #374151;">
+              <form method="post" action="{% url 'remover_carrinho' item.id %}">
+              {% csrf_token %}    
+              <input type="hidden" name="tamanho" value="{{ item.item_estoque.tamanho }}">                  
 
-             <input type="hidden" name="id_cor" value="{{ item.item_estoque.cor.id }}">                  
+              <input type="hidden" name="id_cor" value="{{ item.item_estoque.cor.id }}">                  
 
-             <button type="submit">-</button>
-            </form>
-           </span>
-           </p>
-           {{ item.quantidade }}
-       <form method="post" action="{% url 'adicionar_carrinho' item.item_estoque.produto.id %}">
-        {% csrf_token %}    
-        <input type="hidden" name="tamanho" value="{{ item.item_estoque.tamanho }}">                  
-        <input type="hidden" name="id_cor" value="{{ item.item_estoque.cor.id }}">                  
-        <button type="submit">+</button>
-       </form>
-      </span>
-      </p>
-      <hr>
-    </div>
-
-
-      <div style="display: flex; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid #f3f4f6;">
-        <span style="color: #6b7280; font-size: 13px;">Unit.: {{ item.item_estoque.produto.preco }}</span>
-        <span style="font-weight: 700; color: #16a34a;">Total: {{ item.preco_total }}</span>
+              <button type="submit">-</button>
+              </form>
+            </span>
+            </p>
+            {{ item.quantidade }}
+        <form method="post" action="{% url 'adicionar_carrinho' item.item_estoque.produto.id %}">
+          {% csrf_token %}    
+          <input type="hidden" name="tamanho" value="{{ item.item_estoque.tamanho }}">                  
+          <input type="hidden" name="id_cor" value="{{ item.item_estoque.cor.id }}">                  
+          <button type="submit">+</button>
+        </form>
+        </span>
+        </p>
+        <hr>
       </div>
+
+
+        <div style="display: flex; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid #f3f4f6;">
+          <span style="color: #6b7280; font-size: 13px;">Unit.: {{ item.item_estoque.produto.preco }}</span>
+          <span style="font-weight: 700; color: #16a34a;">Total: {{ item.preco_total }}</span>
+        </div>
+      </div>
+    
     </div>
-  
-  </div>
-{% endfor %}
-<a href="{% url 'checkout' %}">Checkout</a>
+  {% endfor %}
+  <a href="{% url 'checkout' %}">Checkout</a>
+{% else %}
+  <p>O carrinho está vazio.</p>
+  <a href="{% url 'loja' %}">Viste nossa no loja</a>
+{% endif %}
+
 
 {% endblock %}

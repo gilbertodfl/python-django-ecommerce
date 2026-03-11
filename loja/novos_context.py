@@ -1,4 +1,4 @@
-from .models import Pedido, ItensPedido
+from .models import Pedido, ItensPedido, Cliente
 def carrinho(request):
     quantidade_produtos_carrinho = 0
     if request.user.is_authenticated:
@@ -6,10 +6,12 @@ def carrinho(request):
         #print ('Usuário autenticado:', request.user.username)
         cliente = request.user.cliente
     else:
-        print ('Usuário não autenticado')
-        return {'quantidade_produtos_carrinho': quantidade_produtos_carrinho}
-    ## get_or_create se achar, retorna o achado, do contrário cria um novo.         
-        
+        if request.COOKIES.get('id_sessao'):
+            id_sessao = request.COOKIES.get('id_sessao')
+            cliente, criado = Cliente.objects.get_or_create(id_sessao=id_sessao)    
+        else:
+            return { 'quantidade_produtos_carrinho': quantidade_produtos_carrinho }
+       
     pedido, criado = Pedido.objects.get_or_create(cliente=cliente, finalizado=False)
     ##uma vez obtido o pedido, vamos ver quantos itens fazem parte do pedido para nossos calculos de quantidade_produtos_carrinho
     ##itens_pedido = pedido.itens_pedido.all()
