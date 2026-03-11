@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template import context
 from  .models import * 
+import uuid 
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -82,7 +83,15 @@ def adicionar_carrinho(request, id_produto):
                 item_estoque.quantidade -= 1
                 item_estoque.save()
         else:
-            return redirect('loja')
+            ## aqui vamos gerar um id de sessão para o usuário não autenticado, e armazenar os itens do carrinho em uma 
+            # estrutura de dados associada a esse id de sessão.
+            if request.COOKIES.get('id_sessao'):
+                id_sessao = request.COOKIES.get('id_sessao')
+            else:
+                id_sessao = str(uuid.uuid4())
+            resposta = redirect('loja')
+            resposta.set_cookie(key='id_sessao',value=id_sessao, max_age=30*24*60*60)  # Cookie válido por 30 dias
+            return resposta
 
         return redirect('carrinho')
     else:
