@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.template import context
 from  .models import * 
 import uuid 
+from .utils import filtrar_produtos
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -10,15 +11,13 @@ def homepage(request):
     }
     return render(request, 'homepage.html', context)
 
-def loja(request, slug_categoria=None):
-    
-    if slug_categoria:
-        categoria= Categoria
-        ## Aqui ele consegue fazer o joiner e o filtro porque estamos usando __ e o proprio nome 
-        ## mais detalhes veja no .models
-        produtos = produtos.filter(categoria__nome=slug_categoria,ativo=True)
-    else:
-        produtos = Produto.objects.filter(ativo=True)
+def loja(request, filtro=None):
+
+    ## pego todos os produtos ativos
+    produtos = Produto.objects.filter(ativo=True)    
+    ## baseado no que peguei, aplico o filtro. 
+    # O filtro pode ser por categoria ou por tipo neste versão
+    produtos = filtrar_produtos(produtos, filtro)
     
     context={
         'produtos': produtos
