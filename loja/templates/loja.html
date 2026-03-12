@@ -4,6 +4,29 @@
 {% block body %}
 
 <h3>Loja</h3>
+<form method='post' action="{% url 'loja' %}">
+    {% csrf_token %}
+   
+    <input type="number" name="preco_minimo" value={{ minimo }}  placeholder="0">
+    <input type="number" name="preco_maximo" value={{maximo}}  placeholder="0">
+    <p>Tamanho:</p>
+        {%for tamanho in tamanhos %}
+            <input type="radio" name="tamanho" value={{tamanho}}>
+            <label for="{{tamanho}}">{{tamanho}}</label>    
+        {%endfor%}
+    <p>Categoria:</p>
+        {%for categoria in categorias %}
+            <input type="radio" name="categoria" value={{categoria.slug}}>
+            <label for="{{categoria}}">{{categoria.nome}}</label>
+        {%endfor%}    
+    <p>Tipo:</p>
+        {%for tipo in tipos %}
+            <input type="radio" name="tipo" value={{tipo.slug}}>
+            <label for="{{tipo}}">{{tipo.nome}}</label>
+        {%endfor%}  
+    <button type="submit">Filtrar</button>
+ </form>
+
     {% for produto in produtos %}
 
         <div class="produto">

@@ -18,9 +18,12 @@ def loja(request, filtro=None):
     ## baseado no que peguei, aplico o filtro. 
     # O filtro pode ser por categoria ou por tipo neste versão
     produtos = filtrar_produtos(produtos, filtro)
-    
+    tamanhos =[ "P", "M", "G", "GG" ]
     context={
-        'produtos': produtos
+        'produtos': produtos,
+        'minimo': produtos.order_by('preco').first().preco if produtos.exists() else 0,
+        'maximo': produtos.order_by('-preco').first().preco if produtos.exists() else 0,
+        'tamanhos': tamanhos,
     }
     return render(request, 'loja.html', context)
 
