@@ -36,6 +36,6 @@ O Django ORM converte isso para WHERE pedido_id = pedido.pk.
 
 def categorias_tipos(request):
     from .models import Categoria, Tipo
-    categorias = Categoria.objects.all()
-    tipos = Tipo.objects.all()
-    return {'categorias': categorias, 'tipos': tipos}
+    categorias_navegacao = Categoria.objects.all()
+    tipos_navegacao = Tipo.objects.all()
+    return {'categorias': categorias_navegacao, 'tipos': tipos_navegacao}

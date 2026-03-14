@@ -7,36 +7,38 @@
 <form method='post' action="{% url 'loja' %}">
     {% csrf_token %}
    
-    <input type="number" name="preco_minimo" value={{ minimo }}  placeholder="0">
-    <input type="number" name="preco_maximo" value={{maximo}}  placeholder="0">
+    <input type="number" name="preco_minimo" value="{{ minimo }}" placeholder="0" step="0.01" min="0">
+    <input type="number" name="preco_maximo" value="{{ maximo }}" placeholder="0" step="0.01" min="0">
+    
     <p>Tamanho:</p>
-        {%for tamanho in tamanhos %}
-            <input type="radio" name="tamanho" value={{tamanho}}>
-            <label for="{{tamanho}}">{{tamanho}}</label>    
-        {%endfor%}
-    <p>Categoria:</p>
-        {%for categoria in categorias %}
-            <input type="radio" name="categoria" value={{categoria.slug}}>
-            <label for="{{categoria}}">{{categoria.nome}}</label>
-        {%endfor%}    
-    <p>Tipo:</p>
-        {%for tipo in tipos %}
-            <input type="radio" name="tipo" value={{tipo.slug}}>
-            <label for="{{tipo}}">{{tipo.nome}}</label>
-        {%endfor%}  
-    <button type="submit">Filtrar</button>
- </form>
-
-    {% for produto in produtos %}
-
-        <div class="produto">
-            <a href="{% url 'ver_produto' produto.id %}">
-                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" width="200" height="200">
-            </a>
-            <h4>{{ produto.nome }}</h4>
-            <p>Preço: R$ {{ produto.preco }}</p>
-
-        </div>
+    {% for tamanho in tamanhos %}
+        <input type="radio" name="tamanho" value="{{ tamanho }}" id="tamanho_{{ tamanho }}">
+        <label for="tamanho_{{ tamanho }}">{{ tamanho }}</label>    
     {% endfor %}
+
+    <p>Categoria:</p>
+    {% for categoria in categorias_navegacao %}
+        <input type="radio" name="categoria" value="{{ categoria.slug }}" id="categoria_{{ categoria.slug }}">
+        <label for="{{ categoria.slug }}">{{ categoria.nome }}</label>
+    {% endfor %}    
+
+    <p>Tipo:</p>
+    {% for tipo in tipos_navegacao %}
+        <input type="radio" name="tipo" value="{{ tipo.slug }}" id="tipo_{{ tipo.slug }}">
+        <label for="tipo.slug }}">{{ tipo.nome }}</label>
+    {% endfor %}  
+    <br>
+    <button type="submit">Filtrar</button>
+</form>
+
+{% for produto in produtos %}
+    <div class="produto">
+        <a href="{% url 'ver_produto' produto.id %}">
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" width="200" height="200">
+        </a>
+        <h4>{{ produto.nome }}</h4>
+        <p>Preço: R$ {{ produto.preco }}</p>
+    </div>
+{% endfor %}
 
 {% endblock %}

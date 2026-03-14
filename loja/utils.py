@@ -1,4 +1,4 @@
-def filtrar_produtos(produtos, filtro):
+def filtrar_produtos(produtos, filtro, preco_minimo=0, preco_maximo=1000, tamanho=None):
     if filtro:    
         if  "-" in filtro:
             categoria_slug, tipo_slug = filtro.split("-")

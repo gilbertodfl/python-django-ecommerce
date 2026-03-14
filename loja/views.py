@@ -1,3 +1,4 @@
+from math import prod
 from django.shortcuts import render, redirect
 from django.template import context
 from  .models import * 
@@ -18,13 +19,36 @@ def loja(request, filtro=None):
     ## baseado no que peguei, aplico o filtro. 
     # O filtro pode ser por categoria ou por tipo neste versão
     produtos = filtrar_produtos(produtos, filtro)
-    tamanhos =[ "P", "M", "G", "GG" ]
+
+    if request.method == 'POST':
+        dados = request.POST.dict()
+        print(dados)
+        produtos = produtos.filter(preco__gte=dados.get('preco_minimo', 0), preco__lte=dados.get('preco_maximo', 10000))
+        if "tamanho" in dados:
+            itens = ItemEstoque.objects.filter(produto__in=produtos, quantidade__gt=0, tamanho=dados.get("tamanho"))
+            ids_produtos = itens.values_list('produto__id', flat=True).distinct()
+            produtos=produtos.filter(id__in=ids_produtos)
+        if "tipo" in dados:
+            produtos = produtos.filter(tipo__slug=dados.get("tipo"))
+        if "categoria" in dados:
+            produtos = produtos.filter(categoria__slug=dados.get("categoria"))
+    
+    itens = ItemEstoque.objects.filter(produto__in=produtos, quantidade__gt=0)  
+    tamanhos = itens.values_list('tamanho', flat=True).distinct()
+    ids_categorias = produtos.values_list('categoria__id', flat=True).distinct()
+    categorias=Categoria.objects.filter(id__in=ids_categorias)
+    ##minimo, maximo= preco_minimo_maximo(produtos)
     context={
         'produtos': produtos,
-        'minimo': produtos.order_by('preco').first().preco if produtos.exists() else 0,
-        'maximo': produtos.order_by('-preco').first().preco if produtos.exists() else 0,
+        # 'minimo': produtos.order_by('preco').first().preco if produtos.exists() else 0,
+        # 'maximo': produtos.order_by('-preco').first().preco if produtos.exists() else 0,
+        'minimo':  0,
+        'maximo': 1000,
+
         'tamanhos': tamanhos,
+        'categorias': categorias
     }
+    
     return render(request, 'loja.html', context)
 
 def ver_produto(request, id_produto, id_cor=None):
