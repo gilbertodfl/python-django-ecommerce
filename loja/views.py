@@ -4,6 +4,7 @@ from django.template import context
 from  .models import * 
 import uuid 
 from .utils import filtrar_produtos, ordernar_produtos
+from django.contrib.auth import authenticate, login , logout 
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -225,5 +226,25 @@ def adicionar_endereco(request):
 def minha_conta(request):
     return render(request, 'usuario/minha_conta.html')
 
-def login(request):
-    return render(request, 'usuario/login.html')
+def fazer_login(request):
+    erro = False
+    if request.user.is_authenticated:
+        return redirect('loja')
+    if request.method == 'post':
+        dados=request.POST.dict()
+        if 'email' in dados and 'senha' in dados:
+            email = dados.get('email')
+            senha = dados.get('senha')
+            usuario = authenticate(request, username=email, password=senha)
+            if usuario:
+                login(request, usuario)
+                return redirect('loja')
+            else:
+                erro = True
+        else:
+            erro = True
+    context = { "erro:": erro}
+    return render(request, 'usuario/login.html', context )
+    
+def criar_conta(request):
+    return render(request, 'usuario/criarconta.html')    

@@ -4,5 +4,16 @@
 {% block body %}
 
 <h3>Login</h3>
+{% if erro %}
+    <p style="color: red">Credenciais inválidas</p>
+{% endif %}
 
+<form method="post" action="{% url 'fazer_login' %}">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+</form>
+<a href="{% url 'fazer_login' %}">Já tem uma conta? Faça login</a>
+<a href="#">Esqueci minha senha</a>
 {% endblock %}
