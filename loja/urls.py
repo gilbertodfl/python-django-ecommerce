@@ -1,6 +1,14 @@
 from django.urls import path
 from .views import *
 
+"""
+Resumindo os três parâmetros do path():
+
+1º '' → o padrão da URL
+2º homepage → a view que processa a requisição
+3º name="homepage" → um apelido para referenciar essa URL no código (ex: reverse('homepage') ou {% url 'homepage' %} nos templates)
+"""
+
 urlpatterns = [
     path('', homepage, name="homepage"),
     path('loja/', loja, name="loja"),

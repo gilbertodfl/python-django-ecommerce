@@ -37,6 +37,7 @@ def loja(request, filtro=None):
     tamanhos = itens.values_list('tamanho', flat=True).distinct()
     ids_categorias = produtos.values_list('categoria__id', flat=True).distinct()
     categorias=Categoria.objects.filter(id__in=ids_categorias)
+    #categorias=Categoria.objects.all()
     ##minimo, maximo= preco_minimo_maximo(produtos)
     context={
         'produtos': produtos,

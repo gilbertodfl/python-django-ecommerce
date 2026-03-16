@@ -38,4 +38,4 @@ def categorias_tipos(request):
     from .models import Categoria, Tipo
     categorias_navegacao = Categoria.objects.all()
     tipos_navegacao = Tipo.objects.all()
-    return {'categorias': categorias_navegacao, 'tipos': tipos_navegacao}
+    return {'categorias_navegacao': categorias_navegacao, 'tipos_navegacao': tipos_navegacao}
