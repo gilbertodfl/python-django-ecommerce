@@ -34,6 +34,11 @@ class Produto(models.Model):
 
     def __str__(self):
         return f"{self.nome},  {self.categoria}, Tipo: {self.tipo}, Preço: {self.preco}"
+    ## aqui estamos calculando o total de vendas de um produto específico.
+    #         
+    def total_vendas(self):
+        itens_pedido = ItensPedido.objects.filter(pedido__finalizado=True, item_estoque__produto__id=self.id)
+        return sum(item.quantidade for item in itens_pedido)
 
 class Cor(models.Model):
     nome = models.CharField(max_length=80, null=True, blank=True)

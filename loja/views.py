@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.template import context
 from  .models import * 
 import uuid 
-from .utils import filtrar_produtos
+from .utils import filtrar_produtos, ordernar_produtos
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -36,12 +36,13 @@ def loja(request, filtro=None):
     tamanhos = itens.values_list('tamanho', flat=True).distinct()
     ids_categorias = produtos.values_list('categoria__id', flat=True).distinct()
     categorias=Categoria.objects.filter(id__in=ids_categorias)
-    #categorias=Categoria.objects.all()
     ##minimo, maximo= preco_minimo_maximo(produtos)
-    context={
+    ordem = request.GET.get("ordem","menor-preco")
+    produtos = ordernar_produtos(produtos, ordem)
+    context = {
         'produtos': produtos,
-        'minimo': Produto.objects.order_by('preco').first().preco if produtos.exists() else 0,
-        'maximo': Produto.objects.order_by('-preco').first().preco if produtos.exists() else 1000,
+        'minimo': Produto.objects.order_by('preco').first().preco if produtos else 0,
+        'maximo': Produto.objects.order_by('-preco').first().preco if produtos else 1000,
         'tamanhos': tamanhos,
         'categorias': categorias
     }
