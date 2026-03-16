@@ -38,6 +38,8 @@
         </a>
         <h4>{{ produto.nome }}</h4>
         <p>Preço: R$ {{ produto.preco }}</p>
+        <p>Categoria: {{ produto.categoria.nome }}</p>
+        <p>Tipo: {{ produto.tipo.nome }}</p>
     </div>
 {% endfor %}
 

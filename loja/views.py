@@ -32,7 +32,6 @@ def loja(request, filtro=None):
             produtos = produtos.filter(tipo__slug=dados.get("tipo"))
         if "categoria" in dados:
             produtos = produtos.filter(categoria__slug=dados.get("categoria"))
-    
     itens = ItemEstoque.objects.filter(produto__in=produtos, quantidade__gt=0)  
     tamanhos = itens.values_list('tamanho', flat=True).distinct()
     ids_categorias = produtos.values_list('categoria__id', flat=True).distinct()
@@ -41,11 +40,8 @@ def loja(request, filtro=None):
     ##minimo, maximo= preco_minimo_maximo(produtos)
     context={
         'produtos': produtos,
-        # 'minimo': produtos.order_by('preco').first().preco if produtos.exists() else 0,
-        # 'maximo': produtos.order_by('-preco').first().preco if produtos.exists() else 0,
-        'minimo':  0,
-        'maximo': 1000,
-
+        'minimo': Produto.objects.order_by('preco').first().preco if produtos.exists() else 0,
+        'maximo': Produto.objects.order_by('-preco').first().preco if produtos.exists() else 1000,
         'tamanhos': tamanhos,
         'categorias': categorias
     }
