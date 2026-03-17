@@ -5,6 +5,9 @@ from  .models import *
 import uuid 
 from .utils import filtrar_produtos, ordernar_produtos
 from django.contrib.auth import authenticate, login , logout 
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -89,41 +92,39 @@ def adicionar_carrinho(request, id_produto):
         
         if not id_cor or not tamanho:
             return redirect('ver_produto', id_produto=id_produto)
-        resposta = redirect('carrinho')            
         if request.user.is_authenticated:   
+            print( 'usuario autenticado:', request.user)
             cliente = request.user.cliente
         else:
             ## aqui vamos gerar um id de sessão para o usuário não autenticado, e armazenar os itens do carrinho em uma 
             # estrutura de dados associada a esse id de sessão.
-
+            print( 'usuario sem autenticação')
             if request.COOKIES.get('id_sessao'):
                 id_sessao = request.COOKIES.get('id_sessao')
-
             else:
                 id_sessao = str(uuid.uuid4())
                 cliente, criado = Cliente.objects.get_or_create(id_sessao=id_sessao)
                 cliente.save()
                 resposta.set_cookie(key='id_sessao',value=id_sessao, max_age=30*24*60*60)  # Cookie válido por 30 dias
                 resposta = redirect('loja')
+        pedido, criado = Pedido.objects.get_or_create(cliente=cliente, finalizado=False)
+        item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
+        print( pedido)
+        if item_estoque and item_estoque.quantidade > 0:
+            print('entrei no if do item_estoque')
 
-            pedido, criado = Pedido.objects.get_or_create(cliente=cliente, finalizado=False)
-            item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
-            print( pedido)
-            if item_estoque and item_estoque.quantidade > 0:
-                print('entrei no if do item_estoque')
+            itens_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
+            if not criado:
+                itens_pedido.quantidade += 1
+                print('Produto já no carrinho, incrementando quantidade para:', itens_pedido.quantidade)
+            else:
+                print('novo item no pedido')
+                itens_pedido.quantidade = 1
+            itens_pedido.save()
+            ##item_estoque.quantidade -= 1
+            item_estoque.save()
 
-                itens_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
-                if not criado:
-                    itens_pedido.quantidade += 1
-                    print('Produto já no carrinho, incrementando quantidade para:', itens_pedido.quantidade)
-                else:
-                    print('novo item no pedido')
-                    itens_pedido.quantidade = 1
-                itens_pedido.save()
-                item_estoque.quantidade -= 1
-                item_estoque.save()
-
-        return resposta
+        return redirect('loja')
     else:
         return redirect('loja')
     
@@ -132,15 +133,9 @@ def remover_carrinho(request, id_produto):
         dados = request.POST.dict()
         tamanho = dados.get('tamanho')
         id_cor = dados.get('id_cor')
-        if not tamanho:
-            return redirect('ver_produto', id_produto=id_produto)
-        print("Adicionar ao carrinho: Produto ID:", id_produto)
-        
-        if not id_cor or not tamanho:
-            return redirect('ver_produto', id_produto=id_produto)
         if request.user.is_authenticated:   
             cliente = request.user.cliente
-            
+          
         else:
             if request.COOKIES.get('id_sessao'):
                 id_sessao = request.COOKIES.get('id_sessao')
@@ -152,7 +147,7 @@ def remover_carrinho(request, id_produto):
         item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
         item_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
         item_pedido.quantidade -= 1
-        item_estoque.quantidade += 1   
+        ##item_estoque.quantidade += 1   
         item_pedido.save()
         if item_pedido.quantidade <= 0:
                 item_pedido.delete()
@@ -230,11 +225,11 @@ def fazer_login(request):
     erro = False
     if request.user.is_authenticated:
         return redirect('loja')
-    if request.method == 'post':
+    if request.method == 'POST':
         dados=request.POST.dict()
-        if 'email' in dados and 'senha' in dados:
-            email = dados.get('email')
-            senha = dados.get('senha')
+        if 'username' in dados and 'password' in dados:
+            email = dados.get('username')
+            senha = dados.get('password')
             usuario = authenticate(request, username=email, password=senha)
             if usuario:
                 login(request, usuario)
@@ -245,6 +240,77 @@ def fazer_login(request):
             erro = True
     context = { "erro:": erro}
     return render(request, 'usuario/login.html', context )
-    
+
 def criar_conta(request):
-    return render(request, 'usuario/criarconta.html')    
+    
+    if request.user.is_authenticated:
+        return redirect('loja')
+    if request.method == 'POST':
+        dados=request.POST.dict()
+        print('passei no post')
+        if 'email' in dados and 'senha' in dados:
+            email = dados.get('email')
+            senha = dados.get('senha')
+            cofirmacao_senha = dados.get('senha')
+            print('email:', email)
+            print('senha:', senha)
+            print('confifracao_senha:', cofirmacao_senha)
+            try:
+                validate_email(email)
+            except ValidationError:
+                erro = "Email inválido."
+                print( erro )
+                context = { "erro:": erro}
+                return render(request, 'usuario/criar_conta.html', context )
+            if senha != cofirmacao_senha:
+                erro = "As senhas não coincidem."
+                print( erro )
+                context = { "erro:": erro}
+                return render(request, 'usuario/criar_conta.html', context )
+            if User.objects.filter(username=email).exists():
+                erro = "Email já cadastrado."
+                print(erro)
+                context = { "erro:": erro}
+                return render(request, 'usuario/criar_conta.html', context )
+            usuario, criado = User.objects.get_or_create(username=email, email=email)
+            usuario.set_password(senha)
+            usuario.save()
+            print('usuario foi criado', usuario)
+            ## Observe que cliente é uma tabela e usuario(django) é outra tabela, e elas estão relacionadas. O cliente tem um campo user que é uma ForeignKey para o usuário. 
+            # Então, quando criamos um usuário, também precisamos criar um cliente associado a esse usuário. relacionamento 1:1
+            
+            if request.COOKIES.get('id_sessao'):
+                ## A fim não perdemos os itens do carrinho no anônimo, vamos verificar antes de criar. 
+                # Se o usuário tinha um carrinho anônimo, vamos associar esse carrinho ao novo cliente criado.
+                id_sessao = request.COOKIES.get('id_sessao')
+                print('tem id_sessao', id_sessao)
+                cliente, criado = Cliente.objects.get_or_create(id_sessao=id_sessao)
+            else:
+                print('sem sessao')
+                cliente, criado = Cliente.objects.get_or_create(email=email)
+            cliente.usuario = usuario
+            cliente.email=email
+            cliente.save()
+            print('cliente: ', cliente )
+            ## fazendo o login logo após a criação da conta:
+            usuario = authenticate(request, username=email, password=senha)
+            if usuario:
+                login(request, usuario)
+                print( 'usuario foi autenticado')
+                return redirect('loja')
+            else:
+                erro = "Erro ao autenticar o usuário após a criação da conta."
+                print( 'usuario NAO fOI autenticado')
+        else:
+            erro = "Preencha todos os campos."
+    else:
+        context={"erro": erro}            
+        print( request.method)
+        print(context)
+    return render(request, 'usuario/criar_conta.html', context )
+    
+def fazer_logout(request):
+    print( 'usuario saiu', request.user)
+    ##resposta.delete_cookie('id_sessao')
+    logout(request)
+    return  redirect('fazer_login')

@@ -22,6 +22,7 @@ urlpatterns = [
     path('adicionar_endereco', adicionar_endereco, name="adicionar_endereco"),
     path('minhaconta/', minha_conta, name="minha_conta"),
     path('login/', fazer_login, name="fazer_login"),
+    path('logout/', fazer_logout, name="fazer_logout"),    
     path('criarconta/', criar_conta, name="criar_conta"),
 
 ]

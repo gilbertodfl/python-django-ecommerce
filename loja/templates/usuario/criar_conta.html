@@ -2,14 +2,16 @@
 {% load static %}
 
 {% block body %}
-
 <h3>Criar conta</h3>
-<form method="post" action="{% url 'login' %}">
+{% if erro != "" %}
+    <p style="color: red">{{ erro }}</p>
+{% endif %}
+<form method="post" action="{% url 'criar_conta' %}">
     {% csrf_token %}
-    <input type="text" name="email" placeholder="Username" required />
-    <input type="password" name="senha" placeholder="Passenhasword" required />
+    <input type="email" name="email" placeholder="email" required />
+    <input type="password" name="senha" placeholder="senha" required />
     <input type="password" name="confirmacaosenha" placeholder="confirmacaosenha" required />    
-    <button type="submit">Login</button>
+    <button type="submit">Criar Conta</button>
 </form>
 <a href="{% url 'fazer_login' %}">Já tem uma conta? Faça login</a>
 <a href="#">Esqueci minha senha</a>
