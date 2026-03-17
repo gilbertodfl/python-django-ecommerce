@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views
 from .views import *
 
 """
@@ -24,5 +25,15 @@ urlpatterns = [
     path('login/', fazer_login, name="fazer_login"),
     path('logout/', fazer_logout, name="fazer_logout"),    
     path('criarconta/', criar_conta, name="criar_conta"),
+    ## aqui ele chama a função fazer_login, sempre que encontrar uma rota com @login_required
+    ##path('accounts/', include('django.contrib.auth.urls')),  # Inclui as URLs de autenticação do Django
+    # como já fizemos de login, criar conta e logout, então vamos importar algumas. 
+
+    path('password_change/'       , views.PasswordChangeView.as_view(), name="password_change"),
+    path('password_change/done/'  , views.PasswordChangeDoneView.as_view(), name="password_change_done"),
+    path('password_reset/'        , views.PasswordResetView.as_view(), name="password_reset"),
+    path('password_reset/done/'   , views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path('reset/done/'            , views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
 
 ]

@@ -107,9 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -149,3 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ## Aqui ele chama a função fazer_login, sempre que encontrar uma rota com @login_required
 ## Se não conseguir, então chama a função fazer_login. 
 LOGIN_URL = 'fazer_login'
+
+## Aqui ele define o backend de email para desenvolvimento, que é o console.
+## Assim, conseguimos ver o que está sendo gerado ao usar o password_reset, por exemplo.
+E_MAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

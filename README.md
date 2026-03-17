@@ -10,7 +10,6 @@ python -m pip install Pillow
 
 python3 manage.py createsuperuser
 
-###   
 Dia a dia
 
 source .venv/bin/activate
@@ -23,8 +22,7 @@ python3 manage.py runserver
 depois de alterar o models.py execute os comandos abaixo:
 
 python3 manage.py  makemigrations   
-python3 manage.py  migrate   
- 
+python3 manage.py  migrate   
 
 python3 manage.py  runserver 
 
@@ -61,7 +59,6 @@ PASSO 03: Fazer aparecer no admin do django
 admin.site.register(Banner)
 ```
 
-  
 PASSO 04:No views.py crie o banners e passe como contexto
 
 ```plaintext
@@ -131,61 +128,129 @@ O fluxo abaixo descreve as páginas/rotas principais e **quem chama quem** (temp
 
 #### Rotas principais
 
-- **`/`** → `homepage(request)` → renderiza `homepage.html`
-  - Mostra banners ativos (`Banner.objects.filter(ativo=True)`).
+`**/**` → `homepage(request)` → renderiza `homepage.html`
 
-- **`/loja/`** → `loja(request, slug_categoria=None)` → renderiza `loja.html`
-  - Lista produtos ativos.
+*   Mostra banners ativos (`Banner.objects.filter(ativo=True)`).
 
-- **`/loja/<slug_categoria>/`** → `loja(request, slug_categoria)` → renderiza `loja.html`
-  - Usado quando o usuário clica em uma categoria/tipo no menu.
-  - Observação: `slug_categoria` pode vir no formato `categoria-tipo` (ex.: `feminino-calca`), que é interpretado no filtro de produtos.
+`**/loja/**` → `loja(request, slug_categoria=None)` → renderiza `loja.html`
 
-- **`/produto/<id_produto>/`** → `ver_produto(request, id_produto)` → renderiza `ver_produto.html`
-  - Mostra produto, cores e tamanhos disponíveis em estoque.
+*   Lista produtos ativos.
 
-- **`/produto/<id_produto>/<id_cor>/`** → `ver_produto(request, id_produto, id_cor)` → renderiza `ver_produto.html`
-  - Seleciona uma cor e passa `cor_selecionada` ao template.
+`**/loja/<slug_categoria>/**` → `loja(request, slug_categoria)` → renderiza `loja.html`
+
+*   Usado quando o usuário clica em uma categoria/tipo no menu.
+*   Observação: `slug_categoria` pode vir no formato `categoria-tipo` (ex.: `feminino-calca`), que é interpretado no filtro de produtos.
+
+`**/produto/<id_produto>/**` → `ver_produto(request, id_produto)` → renderiza `ver_produto.html`
+
+*   Mostra produto, cores e tamanhos disponíveis em estoque.
+
+`**/produto/<id_produto>/<id_cor>/**` → `ver_produto(request, id_produto, id_cor)` → renderiza `ver_produto.html`
+
+*   Seleciona uma cor e passa `cor_selecionada` ao template.
 
 #### Fluxo “Adicionar ao carrinho”
 
-- **`ver_produto.html`** envia POST para **`/adicionar_carrinho/<id_produto>/`**
-  - Campos enviados: `tamanho` (radio) e `id_cor` (hidden).
+`**ver_produto.html**` envia POST para `**/adicionar_carrinho/<id_produto>/**`
 
-- **`/adicionar_carrinho/<id_produto>/`** → `adicionar_carrinho(request, id_produto)`
-  - Procura o `ItemEstoque` pela combinação `(produto, cor, tamanho)`.
-  - Cria/recupera `Pedido` aberto (`finalizado=False`) do cliente.
-  - Cria/recupera `ItensPedido` e incrementa `quantidade`.
-  - Dá `redirect('carrinho')` ao final (padrão POST/Redirect/GET).
-  - Se usuário não estiver logado, usa cookie `id_sessao` para associar um `Cliente` (sessão).
+*   Campos enviados: `tamanho` (radio) e `id_cor` (hidden).
+
+`**/adicionar_carrinho/<id_produto>/**` → `adicionar_carrinho(request, id_produto)`
+
+*   Procura o `ItemEstoque` pela combinação `(produto, cor, tamanho)`.
+*   Cria/recupera `Pedido` aberto (`finalizado=False`) do cliente.
+*   Cria/recupera `ItensPedido` e incrementa `quantidade`.
+*   Dá `redirect('carrinho')` ao final (padrão POST/Redirect/GET).
+*   Se usuário não estiver logado, usa cookie `id_sessao` para associar um `Cliente` (sessão).
 
 #### Fluxo “Carrinho”
 
-- **`/carrinho/`** → `carrinho(request)` → renderiza `carrinho.html`
-  - Recupera/cria o `Pedido` aberto do cliente e lista `ItensPedido`.
-  - Se não existir `id_sessao` no cookie (usuário anônimo “novo”), renderiza o carrinho com `cliente_existente=False`.
+*   `**/carrinho/**` → `carrinho(request)` → renderiza `carrinho.html`
+    *   Recupera/cria o `Pedido` aberto do cliente e lista `ItensPedido`.
+    *   Se não existir `id_sessao` no cookie (usuário anônimo “novo”), renderiza o carrinho com `cliente_existente=False`.
 
 #### Fluxo “Remover do carrinho”
 
-- **Template do carrinho** envia POST para **`/remover_carrinho/<id_produto>/`**
-- **`/remover_carrinho/<id_produto>/`** → `remover_carrinho(request, id_produto)`
-  - Decrementa `ItensPedido.quantidade`, devolve 1 unidade ao estoque e apaga item se `quantidade <= 0`.
-  - Depois faz `redirect('carrinho')`.
+*   **Template do carrinho** envia POST para `**/remover_carrinho/<id_produto>/**`
+*   `**/remover_carrinho/<id_produto>/**` → `remover_carrinho(request, id_produto)`
+    *   Decrementa `ItensPedido.quantidade`, devolve 1 unidade ao estoque e apaga item se `quantidade &lt;= 0`.
+    *   Depois faz `redirect('carrinho')`.
 
 #### Fluxo “Checkout” e “Endereços”
 
-- **`/checkout/`** → `checkout(request)` → renderiza `checkout.html`
-  - Recupera `Pedido` aberto e lista `Endereco` do cliente.
+`**/checkout/**` → `checkout(request)` → renderiza `checkout.html`
 
-- **`/adicionar_endereco`** → `adicionar_endereco(request)`
-  - **GET**: renderiza `adicionar_endereco.html`
-  - **POST**: cria `Endereco` e faz `redirect('checkout')`
+*   Recupera `Pedido` aberto e lista `Endereco` do cliente.
+
+`**/adicionar_endereco**` → `adicionar_endereco(request)`
+
+*   **GET**: renderiza `adicionar_endereco.html`
+*   **POST**: cria `Endereco` e faz `redirect('checkout')`
 
 #### Links globais (navbar)
 
-- O `navbar.html` aparece nas páginas (via `base.html`).
-- Ele chama as rotas por nome:
-  - `homepage`, `loja`, `login`, `minha_conta`, `carrinho`
-- Ele também monta links de categoria/tipo para a rota `loja` com o slug:
-  - Categoria: `loja/<categoria.slug>/`
-  - Tipo: `loja/<categoria.slug>-<tipo.slug>/`
+*   O `navbar.html` aparece nas páginas (via `base.html`).
+*   Ele chama as rotas por nome:
+    *   `homepage`, `loja`, `login`, `minha_conta`, `carrinho`
+*   Ele também monta links de categoria/tipo para a rota `loja` com o slug:
+    *   Categoria: `loja/<categoria.slug>/`
+    *   Tipo: `loja/<categoria.slug>-<tipo.slug>/`\</tipo.slug>\</categoria.slug>\</categoria.slug>
+
+### _@login\_required e LOGIN\_URL = 'fazer\_login'_
+
+_Para forçar a autorização temos no django : from django.contrib.auth.decorators import login\_required_
+
+_A variável LOGIN\_URL é definida no settings.py_
+
+_Em cada função na view, coloque o decorators @login\_required_
+
+_exemplo:_
+
+```plaintext
+@login_required
+def fazer_logout(request):
+    logout(request)
+    return redirect('fazer_login')
+```
+
+### URLS PRONTAS DO DJANGO PARA CONTAS
+
+Usando urls do django para controle da conta do usuário:
+
+Altere o arquivo urls.py
+
+```plaintext
+from django.contrib.auth import views
+path('password_change/', views.PasswordChangeView.as_view, _name_="password_change"),
+path('password_change/done/', views.PasswordChangeDoneView.as_view, _name_="password_change_done"),
+path('password_reset/', views.PasswordResetView.as_view, _name_="password_reset"),
+path('password_reset/done/', views.PasswordResetDoneView.as_view, _name_="password_reset_done"),
+path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view, _name_="password_reset_confirm"),
+path('reset/done/', views.PasswordResetCompleteView.as_view, _name_="password_reset_complete"),
+```
+
+exemplo de uso: veja o arquivo login.html que temos uma chamada:
+
+\<a href="{% url 'password\_reset' %}">Esqueci minha senha\</a>
+
+### SMTP EMAIL
+
+```plaintext
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'seu-email@gmail.com'
+EMAIL_HOST_PASSWORD = 'sua-senha-de-app'  # senha de app, não a senha normal
+DEFAULT_FROM_EMAIL = 'seu-email@gmail.com'
+```
+
+O ideal é usar variável de ambiente. 
+
+```plaintext
+# settings.py
+import os
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+```
