@@ -5,6 +5,7 @@ from  .models import *
 import uuid 
 from .utils import filtrar_produtos, ordernar_produtos
 from django.contrib.auth import authenticate, login , logout 
+from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -88,12 +89,12 @@ def adicionar_carrinho(request, id_produto):
         id_cor = dados.get('id_cor')
         if not tamanho:
             return redirect('ver_produto', id_produto=id_produto)
-        print("Adicionar ao carrinho: Produto ID:", id_produto)
+        ##print("Adicionar ao carrinho: Produto ID:", id_produto)
         
         if not id_cor or not tamanho:
             return redirect('ver_produto', id_produto=id_produto)
         if request.user.is_authenticated:   
-            print( 'usuario autenticado:', request.user)
+            ##print( 'usuario autenticado:', request.user)
             cliente = request.user.cliente
         else:
             ## aqui vamos gerar um id de sessão para o usuário não autenticado, e armazenar os itens do carrinho em uma 
@@ -111,9 +112,9 @@ def adicionar_carrinho(request, id_produto):
             resposta.set_cookie(key='id_sessao',value=id_sessao, max_age=30*24*60*60)  # Cookie válido por 30 dias
         pedido, criado = Pedido.objects.get_or_create(cliente=cliente, finalizado=False)
         item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
-        print( pedido)
+        ##print( pedido)
         if item_estoque and item_estoque.quantidade > 0:
-            print('entrei no if do item_estoque')
+            ##print('entrei no if do item_estoque')
 
             itens_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
             if not criado:
@@ -219,6 +220,7 @@ def adicionar_endereco(request):
         context = {}
         return render(request, 'adicionar_endereco.html', context)
 
+@login_required
 def minha_conta(request):
     return render(request, 'usuario/minha_conta.html')
 
@@ -309,7 +311,7 @@ def criar_conta(request):
         print( request.method)
         print(context)
     return render(request, 'usuario/criar_conta.html', context )
-    
+@login_required    
 def fazer_logout(request):
     print( 'usuario saiu', request.user)
     ##resposta.delete_cookie('id_sessao')

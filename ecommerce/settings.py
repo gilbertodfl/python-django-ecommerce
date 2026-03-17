@@ -145,3 +145,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+## Aqui ele chama a função fazer_login, sempre que encontrar uma rota com @login_required
+## Se não conseguir, então chama a função fazer_login. 
+LOGIN_URL = 'fazer_login'
