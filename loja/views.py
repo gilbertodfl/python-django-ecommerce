@@ -317,3 +317,6 @@ def fazer_logout(request):
     ##resposta.delete_cookie('id_sessao')
     logout(request)
     return  redirect('fazer_login')
+
+def meus_pedidos(request):
+    return render( request, 'usuario/meus_pedidos.html')
