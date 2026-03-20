@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-
+from datetime import datetime
+from decimal import Decimal
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -126,6 +127,7 @@ def adicionar_carrinho(request, id_produto):
             itens_pedido.save()
             ##item_estoque.quantidade -= 1
             item_estoque.save()
+        resposta = redirect('loja')
         return resposta
     else:
         return redirect('loja')
@@ -187,6 +189,59 @@ def checkout(request):
     context = {  'pedido': pedido, 'enderecos': enderecos}
 
     return render(request, 'checkout.html', context)
+def finalizar_compra(request, id_pedido):
+    atualizado = False
+    if request.method == "POST":
+        erro = None
+        dados = request.POST.dict()
+
+        total = dados.get("total")
+        pedido = Pedido.objects.get(id=id_pedido)
+
+        if Decimal(total.replace(",", ".")) != pedido.preco_total:            
+            print( 'total:', total, 'preco_total:', pedido.preco_total)
+            erro = "preco"
+
+        if not "endereco" in dados:
+            erro = "endereco"
+        else:
+            endereco = dados.get("endereco")
+            pedido.endereco_id = endereco
+
+        if not request.user.is_authenticated:
+            email = dados.get("email")
+            try:
+                validate_email(email)
+            except ValidationError:
+                erro = "email"
+            if not erro:
+                clientes = Cliente.objects.filter(email=email)
+                if clientes:
+                    pedido.cliente = clientes[0]
+                else:
+                    pedido.cliente.email = email
+                    pedido.cliente.save()
+        
+        codigo_transacao = f"{pedido.id}-{datetime.now().timestamp()}"
+        pedido.codigo_transacao = codigo_transacao
+        pedido.save()
+        if erro:
+            print('entrei no erro do finalizar compra',erro)
+            enderecos = Endereco.objects.filter(cliente=pedido.cliente)
+            context = {"erro": erro, "pedido": pedido, "enderecos": enderecos, "atualizado": atualizado}
+            return render(request, "checkout.html", context)
+        else:
+            atualizado = True
+            context = {"erro": erro, "pedido": pedido,  "atualizado": atualizado}
+            print('salvo pedido com codigo de transacao:', pedido.codigo_transacao)
+            print( 'atualizado:', atualizado)
+            # TODO pagamento do usuário
+            print('imprimindo o context',context)
+            return render(request, 'checkout.html', context)
+    else:
+        print('voltando para loja')
+        return redirect("loja")
+
 def adicionar_endereco(request):
     if request.method == 'POST':
         if request.user.is_authenticated:

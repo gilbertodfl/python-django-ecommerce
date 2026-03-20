@@ -231,7 +231,7 @@ path('reset/done/', views.PasswordResetCompleteView.as_view, _name_="password_re
 
 exemplo de uso: veja o arquivo login.html que temos uma chamada:
 
-\<a href="{% url 'password\_reset' %}">Esqueci minha senha\</a>
+\<a href="{% url 'password\_reset' %}" title="{% url 'password\_reset' %}">Esqueci minha senha\</a>
 
 ### SMTP EMAIL
 
@@ -248,9 +248,15 @@ DEFAULT_FROM_EMAIL = 'seu-email@gmail.com'
 
 O ideal é usar variável de ambiente. 
 
-```plaintext
-# settings.py
-import os
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-```
+\`\`\`plaintext
+
+## settings.py
+
+import os  
+EMAIL\_HOST\_USER = os.environ.get('EMAIL\_HOST\_USER')  
+EMAIL\_HOST\_PASSWORD = os.environ.get('EMAIL\_HOST\_PASSWORD')  
+\`\`\`
+
+### MERCADO PAGO
+
+[https://www.mercadopago.com.br/developers/pt](https://www.mercadopago.com.br/developers/pt)
