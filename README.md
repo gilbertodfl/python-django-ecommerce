@@ -260,3 +260,84 @@ EMAIL\_HOST\_PASSWORD = os.environ.get('EMAIL\_HOST\_PASSWORD')
 ### MERCADO PAGO
 
 [https://www.mercadopago.com.br/developers/pt](https://www.mercadopago.com.br/developers/pt)
+
+[https://www.mercadopago.com.br/developers/pt/docs/sdks-library/server-side](https://www.mercadopago.com.br/developers/pt/docs/sdks-library/server-side)
+
+[https://github.com/mercadopago/sdk-python](https://github.com/mercadopago/sdk-python)
+
+criar preferência:
+
+[https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-pro/preferences/create-preference/post](https://www.mercadopago.com.br/developers/pt/reference/online-payments/checkout-pro/preferences/create-preference/post)
+
+```plaintext
+pip3 install mercadopago
+```
+
+No caso você tem que pegar o token do MERCADO PAGO:
+
+```plaintext
+## Instale antes:
+## pip3 install python-dotenv mercadopago
+
+
+import mercadopago
+from mercadopago.resources import preference
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+
+public_key = os.getenv("MP_PUBLIC_KEY")
+token = os.getenv("MP_ACCESS_TOKEN")
+
+
+sdk = mercadopago.SDK(token)
+preference_data = {
+"items": [
+{
+"title": "Produto Exemplo",
+"quantity": 1,
+"unit_price": 10.00
+},
+"back_urls": {
+"success": "https://www.sualoja.com/success",
+"failure": "https://www.sualoja.com/failure",
+"pending": "https://www.sualoja.com/pending"
+},
+]
+}
+preference_response = sdk.preference().create(preference_data)
+preference= preference_response["response"]
+print (preference_response)
+```
+
+  
+_\## Para testar no comando de linha, abra um terminal e na pasta onde está este arquivo execute assim:_
+
+_python3 api\_mercadopago.py_
+
+_\## Lembre-se de abrir como anônimo para dar certo._
+
+_\## o legal deste print, é que se copiarmos a url de init\_point, e colarmos no navegador como anônimo, ele vai abrir a tela de pagamento do MercadoPago, onde podemos testar o processo de pagamento._
+
+  
+_\## como queremos pegar o link para o pagamento, então vamos fazer assim:_
+
+link\_pagamento = preference\["init\_point"\]
+
+print("Link para pagamento:", link\_pagamento)
+
+_\## saída: Link para pagamento: https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=3281994042-50624590-76e1-4b40-a2d2-978dbab63534_
+
+  
+ 
+
+_\## pegando o id\_pagamento:_
+
+_\## aqui estamos pegando o id do pagamento, que é o pref\_id que está presente na url de init\_point._
+
+id\_pagamento=link\_pagamento\["response"\]\["id"\]
+
+print ("id pagamento:", id\_pagamento)
