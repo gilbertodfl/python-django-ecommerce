@@ -18,13 +18,13 @@ preference_data = {
             "title": "Produto Exemplo",
             "quantity": 1,
             "unit_price": 10.00
-        },
-        "back_urls": {
+        }],
+    "back_urls": {
             "success": "https://www.sualoja.com/success",
             "failure": "https://www.sualoja.com/failure",
             "pending": "https://www.sualoja.com/pending"
-        },
-    ]
+    },
+    
 }
 preference_response = sdk.preference().create(preference_data)
 preference= preference_response["response"]
