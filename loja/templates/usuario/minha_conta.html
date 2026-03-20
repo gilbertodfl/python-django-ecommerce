@@ -5,4 +5,41 @@
 
 <h3>Minha Conta</h3>
 <a href="{% url 'fazer_logout' %}">Sair</a>   
+<a href="{% url 'meus_pedidos' %}">Meus Pedidos</a>
+{% if erro%}
+    <p style="color: red;">{{ erro }}</p>
+{% endif %}
+{% if alterado %}
+    <p style="color: green;">Dados salvos com sucesso.</p>
+    <a href="{% url 'fazer_logout' %}">Sair</a>
+{% endif %}
+<form method="POST" action="{% url 'minha_conta' %}">
+    {% csrf_token %}
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" name="nome" value="{{ request.usuario.cliente.nome }}" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{ request.usuario.cliente.email }}" required><br>
+
+    <label for="number">Telefone:</label>
+    <input type="text" id="telefone" name="telefone" value="{{ request.usuario.cliente.telefone }}" required><br>
+
+
+    <button type="submit">Atualizar</button>
+</form>
+<h3>Troca de senha</h3>
+<form method="POST" action={% url 'minha_conta' %}>
+    {% csrf_token %}
+    <label for="senha_atual">Senha Atual:</label>
+    <input type="password" id="senha_atual" name="senha_atual" required><br>
+ 
+    <label for="nova_senha">Nova Senha:</label>
+    <input type="password" id="nova_senha" name="nova_senha" required><br>
+
+    <label for="nova_senha_confirmacao">Confirmação da Nova Senha:</label>    
+    <input type="password" id="nova_senha_confirmacao" name="nova_senha_confirmacao" required><br>
+    
+    <button type="submit">Salvar Senha</button>
+</form>
+
 {% endblock %}

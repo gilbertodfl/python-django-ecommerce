@@ -222,7 +222,55 @@ def adicionar_endereco(request):
 
 @login_required
 def minha_conta(request):
-    return render(request, 'usuario/minha_conta.html')
+    cliente = request.user.cliente
+    erro = None
+    alterado = False
+    if request.method == 'POST':
+        dados = request.POST.dict()
+        email = dados.get('email')
+        ## aqui está trocando dados e não senha
+        if email and email == cliente.email:
+            try:
+                validate_email(email)
+                usuarios = User.objects.filter(username=email).exclude(id=cliente.usuario.id)
+                if usuarios.exists():
+                    context = {"erro": "Email já cadastrado por outro usuário."}
+                    return render(request, 'usuario/minha_conta.html', context) 
+
+                cliente = request.user.cliente
+                cliente.email = dados.get('email')
+                cliente.telefone = dados.get('telefone')
+                cliente.nome = dados.get('nome')
+
+                cliente.save()
+                request.user.email = email
+                request.user.username = email
+                request.user.save()
+                alterado = True
+                context={"alterado": alterado}
+                return render(request, 'usuario/minha_conta.html', context )
+            except ValidationError:
+                alterado = False
+                context = {"erro": "Email inválido.", "alterado": alterado}
+                return render(request, 'usuario/minha_conta.html', context) 
+        if "senha_atual" in dados:
+            senha_atual = dados.get('senha_atual')
+            nova_senha = dados.get('nova_senha')
+            nova_senha_confirmacao = dados.get('nova_senha_confirmacao')
+            print( 'entrei em senha atual' )
+            print( senha_atual, nova_senha, nova_senha_confirmacao)
+            if not request.user.check_password(senha_atual):
+                context = {"erro": "Senha atual incorreta."}
+                return render(request, 'usuario/minha_conta.html', context) 
+            if nova_senha != nova_senha_confirmacao:
+                context = {"erro": "As novas senhas não coincidem."}
+                return render(request, 'usuario/minha_conta.html', context) 
+            request.user.set_password(nova_senha)
+            request.user.save()
+            alterado = True
+    context = {"alterado": alterado}
+
+    return render(request, 'usuario/minha_conta.html', context )
 
 def fazer_login(request):
     erro = False
@@ -319,4 +367,8 @@ def fazer_logout(request):
     return  redirect('fazer_login')
 
 def meus_pedidos(request):
-    return render( request, 'usuario/meus_pedidos.html')
+    pedidos = Pedido.objects.filter(cliente=request.user.cliente).order_by('-data_finalizacao')
+    context = {
+        'pedidos': pedidos
+    }
+    return render( request, 'usuario/meus_pedidos.html', context)
