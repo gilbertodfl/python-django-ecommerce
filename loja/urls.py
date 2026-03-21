@@ -9,6 +9,7 @@ Resumindo os três parâmetros do path():
 2º homepage → a view que processa a requisição
 3º name="homepage" → um apelido para referenciar essa URL no código (ex: reverse('homepage') ou {% url 'homepage' %} nos templates)
 """
+##app_name = 'loja'  # ✅ adicione esta linha
 
 urlpatterns = [
     path('', homepage, name="homepage"),
@@ -24,6 +25,7 @@ urlpatterns = [
     path('minhaconta/', minha_conta, name="minha_conta"),
     path('meuspedidos/', meus_pedidos, name="meus_pedidos"),
     path('finalizarcompra/<int:id_pedido>/', finalizar_compra, name="finalizar_compra"),
+    path('finalizarpagamento', finalizar_pagamento, name="finalizar_pagamento"),
     path('login/', fazer_login, name="fazer_login"),
     path('logout/', fazer_logout, name="fazer_logout"),    
     path('criarconta/', criar_conta, name="criar_conta"),

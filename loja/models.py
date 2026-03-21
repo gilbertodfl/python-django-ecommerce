@@ -113,3 +113,12 @@ class Banner(models.Model):
     def __str__(self):
         return f"Link: {self.link_destino}, Ativo: {self.ativo}"
         
+class Pagamento(models.Model):
+    pedido = models.ForeignKey(Pedido, null=True, blank=True, on_delete=models.SET_NULL)
+    id_pagamento = models.CharField(max_length=200, null=True, blank=True)
+    status_pagamento = models.CharField(max_length=200, null=True, blank=True) # Exemplo: "Aprovado", "Pendente", "Rejeitado"
+    data_pagamento = models.DateTimeField(null=True, blank=True)
+    aprovado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Pedido: {self.pedido.id if self.pedido else 'sem pedido'}, ID Pagamento: {self.id_pagamento}, aprovado: {self.aprovado}"

@@ -1,6 +1,7 @@
 from math import prod
 from django.shortcuts import render, redirect
 from django.template import context
+from django.urls import reverse
 from  .models import * 
 import uuid 
 from .utils import filtrar_produtos, ordernar_produtos
@@ -10,6 +11,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from datetime import datetime
 from decimal import Decimal
+from .api_mercadopago import criar_pagamento
+
 # Create your views here.
 def homepage(request):
     banners = Banner.objects.filter(ativo=True)
@@ -233,14 +236,34 @@ def finalizar_compra(request, id_pedido):
         else:
             atualizado = True
             context = {"erro": erro, "pedido": pedido,  "atualizado": atualizado}
-            print('salvo pedido com codigo de transacao:', pedido.codigo_transacao)
-            print( 'atualizado:', atualizado)
             # TODO pagamento do usuário
-            print('imprimindo o context',context)
-            return render(request, 'checkout.html', context)
+            itens_pedido = ItensPedido.objects.filter(pedido=pedido)
+            ## TODO: depois vamos preencher corretamente. Ainda não pronto. 
+
+            #link="https://webhook.site/#!/view/6745d213-57f9-4d95-97f7-a2cfdf7177f0/1ed9cbfb-457d-45b0-90fe-7083fe243f56/1"
+
+            ## com a função abaixo conseguimos construir o caminho completo. 
+            ## a instrução abaixo teria que mudar a url principal. achei melhor adaptar só aqui.
+            ##link=request.build_absolute_uri( reverse('loja:finalizar_pagamento'))
+            link = request.build_absolute_uri('/loja/finalizarpagamento')
+            print('build_absolute_uri: o que veio como url ', link)
+            link_pagamento, id_pagamento = criar_pagamento(itens_pedido, link)
+            ## TODO: comentei para não dar erro, depois tem que fazer o fluxo aqui. 
+            ##return render(request, 'checkout.html', context)
+            ## temporariamente vou mandar para a loja, mas o certo é o acima. 
+            pagamento = Pagamento.objects.create(pedido=pedido, id_pagamento=id_pagamento)
+            pagamento.save()
+            return( redirect(link_pagamento) )
     else:
         print('voltando para loja')
         return redirect("loja")
+def finalizar_pagamento(request):
+    ## aqui tem que receber a notificação do mercado pago, verificar o status do pagamento, e atualizar o pedido. 
+    ## isso é um endpoint que o mercado pago vai chamar, então tem que ser uma URL que não precisa de autenticação. 
+    ## depois tem que colocar a URL correta no painel do mercado pago. 
+    print('o que veio no GET: ',request.GET.dict())
+    ##return render(request, 'finalizar_pagamento.html', {})
+    return( redirect('loja') )
 
 def adicionar_endereco(request):
     if request.method == 'POST':
