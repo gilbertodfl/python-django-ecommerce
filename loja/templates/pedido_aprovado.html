@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+<h3>Pedido Aprovado</h3>
+    <a href="{% url 'loja' %}">Vamos comprar mais?</a>
+    <h3>Veja seu email que também tem essas informações</h3>
+<div style="display: flex;">    
+    <ul>
+    <li>
+        Pedido #{{ pedido.id }} - {{ pedido.data_finalizacao }} - transacao: - {{ pedido.codigo_transacao }} - Total: R$ {{ pedido.preco_total }} - Status:  {% if pedido.finalizado %}FINALIZADO{% else %}PENDENTE{% endif %}
+        <p>Endereço: {{ pedido.endereco }}</p>
+        <p>Itens:</p>
+        <ul>
+            {% for item in pedido.itens_pedido %}
+                <img src={{ item.item_estoque.produto.imagem.url }} alt="{{ item.item_estoque.produto.nome }}" width="50" height="50">
+                <li>{{ item.item_estoque.produto.nome }} - Quantidade: {{ item.quantidade }} - Preço: R$ {{ item.preco_total }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+</div>
+{% endblock %}

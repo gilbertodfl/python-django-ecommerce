@@ -118,8 +118,6 @@ def adicionar_carrinho(request, id_produto):
         item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
         ##print( pedido)
         if item_estoque and item_estoque.quantidade > 0:
-            ##print('entrei no if do item_estoque')
-
             itens_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
             if not criado:
                 itens_pedido.quantidade += 1
@@ -128,8 +126,6 @@ def adicionar_carrinho(request, id_produto):
                 print('novo item no pedido')
                 itens_pedido.quantidade = 1
             itens_pedido.save()
-            ##item_estoque.quantidade -= 1
-            item_estoque.save()
         resposta = redirect('loja')
         return resposta
     else:
@@ -151,17 +147,25 @@ def remover_carrinho(request, id_produto):
                 return redirect('loja')
 
         pedido, criado = Pedido.objects.get_or_create(cliente=cliente, finalizado=False)
-        item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
-        item_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
-        item_pedido.quantidade -= 1
-        ##item_estoque.quantidade += 1   
-        item_pedido.save()
-        if item_pedido.quantidade <= 0:
-                item_pedido.delete()
+        ##itens = ItemEstoque.objects.filter(produto__id=id_produto)
+        ##print('Itens encontrados:', itens.values('id', 'cor__id', 'tamanho'))
+        ##print('Com cor:', ItemEstoque.objects.filter(produto__id=id_produto, cor__id=id_cor).values('id', 'tamanho'))
+        try:
+            item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
+        except ItemEstoque.DoesNotExist:
+            return redirect('carrinho')
+        print( 'item em estoque', item_estoque)
+        if item_estoque :
+            item_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
+            item_pedido.quantidade -= 1
+            item_pedido.save()
+            if item_pedido.quantidade <= 0:
+                    item_pedido.delete()
 
         return redirect('carrinho')
     else:
         return redirect('loja')
+
 def carrinho(request):
     if request.user.is_authenticated:
         cliente = request.user.cliente
@@ -262,9 +266,27 @@ def finalizar_pagamento(request):
     ## isso é um endpoint que o mercado pago vai chamar, então tem que ser uma URL que não precisa de autenticação. 
     ## depois tem que colocar a URL correta no painel do mercado pago. 
     print('o que veio no GET: ',request.GET.dict())
-    ##return render(request, 'finalizar_pagamento.html', {})
-    return( redirect('loja') )
+    dados = request.GET.dict()
+    status = dados.get('status')
+    id_pagamento = dados.get('preference_id')
+    if status == 'approved':
+        pagamento = Pagamento.objects.get(id_pagamento=id_pagamento)
+        pagamento.aprovado = True
+        pedido = pagamento.pedido
+        pedido.data_finalizacao = datetime.now()
+        pedido.save()
+        pagamento.save()
+        if request.user.is_authenticated:
+            return redirect('meus_pedidos')
+        else:
+            return redirect('pedido_aprovado', pedido.id)
+    else:
+        return redirect('checkout')            
 
+def pedido_aprovado(request, id_pedido):
+    pedido = Pedido.objects.get(id=id_pedido)
+    context = { 'pedido': pedido}
+    return render( request, 'pedidoaprovado.html', context )
 def adicionar_endereco(request):
     if request.method == 'POST':
         if request.user.is_authenticated:

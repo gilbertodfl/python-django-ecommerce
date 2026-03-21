@@ -26,6 +26,8 @@ urlpatterns = [
     path('meuspedidos/', meus_pedidos, name="meus_pedidos"),
     path('finalizarcompra/<int:id_pedido>/', finalizar_compra, name="finalizar_compra"),
     path('finalizarpagamento', finalizar_pagamento, name="finalizar_pagamento"),
+    path('pedidoaprovado:<int:id_pedido>', pedido_aprovado, name="pedido_aprovado"),
+
     path('login/', fazer_login, name="fazer_login"),
     path('logout/', fazer_logout, name="fazer_logout"),    
     path('criarconta/', criar_conta, name="criar_conta"),
