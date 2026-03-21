@@ -313,7 +313,6 @@ preference= preference_response["response"]
 print (preference_response)
 ```
 
-  
 _\## Para testar no comando de linha, abra um terminal e na pasta onde está este arquivo execute assim:_
 
 _python3 api\_mercadopago.py_
@@ -322,17 +321,13 @@ _\## Lembre-se de abrir como anônimo para dar certo._
 
 _\## o legal deste print, é que se copiarmos a url de init\_point, e colarmos no navegador como anônimo, ele vai abrir a tela de pagamento do MercadoPago, onde podemos testar o processo de pagamento._
 
-  
 _\## como queremos pegar o link para o pagamento, então vamos fazer assim:_
 
 link\_pagamento = preference\["init\_point"\]
 
 print("Link para pagamento:", link\_pagamento)
 
-_\## saída: Link para pagamento: https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=3281994042-50624590-76e1-4b40-a2d2-978dbab63534_
-
-  
- 
+\_## saída: Link para pagamento: https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=3281994042-50624590-76e1-4b40-a2d2-978dbab63534\_
 
 _\## pegando o id\_pagamento:_
 
@@ -341,3 +336,28 @@ _\## aqui estamos pegando o id do pagamento, que é o pref\_id que está present
 id\_pagamento=link\_pagamento\["response"\]\["id"\]
 
 print ("id pagamento:", id\_pagamento)
+
+SMTP COM GMAIL
+
+Configure o settings.py
+
+```plaintext
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = os.getenv('EMAIL_PORT')
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+```
+
+no arquivo .env coloque seus dados. Veja o env-example.
+
+EMAIL\_HOST=smtp.gmail.com EMAIL\_PORT=587 EMAIL\_USE\_TLS=True EMAIL\_HOST\_USER=seu@email.com EMAIL\_HOST\_PASSWORD=sua\_senha

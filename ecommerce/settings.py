@@ -152,4 +152,17 @@ LOGIN_URL = 'fazer_login'
 
 ## Aqui ele define o backend de email para desenvolvimento, que é o console.
 ## Assim, conseguimos ver o que está sendo gerado ao usar o password_reset, por exemplo.
-E_MAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = os.getenv('EMAIL_PORT')
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
