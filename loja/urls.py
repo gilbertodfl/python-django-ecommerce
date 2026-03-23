@@ -31,6 +31,11 @@ urlpatterns = [
     path('login/', fazer_login, name="fazer_login"),
     path('logout/', fazer_logout, name="fazer_logout"),    
     path('criarconta/', criar_conta, name="criar_conta"),
+
+    path('gerenciarloja/', gerenciar_loja, name="gerenciar_loja"),
+    path('exportarrelatorio/<str:relatorio>/', exportar_relatorio, name="exportar_relatorio"),
+
+    
     ## aqui ele chama a função fazer_login, sempre que encontrar uma rota com @login_required
     ##path('accounts/', include('django.contrib.auth.urls')),  # Inclui as URLs de autenticação do Django
     # como já fizemos de login, criar conta e logout, então vamos importar algumas. 

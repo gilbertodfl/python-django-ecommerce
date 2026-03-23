@@ -11,6 +11,9 @@
         <a href="{% url 'fazer_login' %}">Login</a>
     {% endif %}
 
+    {% if equipe %}
+        <a href="{% url 'gerenciar_loja' %}">Gerenciar Loja</a>        
+    {% endif %}
     {{ quantidade_produtos_carrinho }}
 
     <div style='display: flex'>

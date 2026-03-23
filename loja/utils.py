@@ -1,3 +1,6 @@
+from django.contrib.auth import user_logged_in
+from django.core.mail import send_mail
+
 def filtrar_produtos(produtos, filtro, preco_minimo=0, preco_maximo=1000, tamanho=None):
     if filtro:    
         if  "-" in filtro:
@@ -26,3 +29,16 @@ def ordernar_produtos( produtos, ordem ):
         
     else:
         return produtos
+
+def enviar_email_compra(pedido):
+        ## essa parte não tivemos como testar porque o mercado pago exige que seja uma http público
+        assunto = f"Pedido aprovado: {pedido.id}"
+        email=user_logged_in.cliente.email
+        corpo = f"""
+        Id do pedido: {pedido.id}
+        Valor total: {pedido.preco_total}
+
+        """
+        remetente="seuemail@gmail.com"
+
+        send_mail(assunto, corpo, remetente, [email])    

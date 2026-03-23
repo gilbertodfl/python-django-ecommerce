@@ -5,6 +5,7 @@ import mercadopago
 from mercadopago.resources import preference
 from dotenv import load_dotenv
 import os
+from django.conf import settings
 
 load_dotenv()
 
@@ -29,7 +30,6 @@ def criar_pagamento( itens_pedido, link):
 
     preference_data = {
         "items": itens,
-        "auto_return":"all",
         "back_urls": {
                 "success": link,
                 "failure": link,
@@ -37,8 +37,12 @@ def criar_pagamento( itens_pedido, link):
         },
         
     }
+    if not settings.DEBUG:
+        preference_data["auto_return"] = "all"    
     preference_response = sdk.preference().create(preference_data)
-    preference= preference_response["response"]
+    print("STATUS:", preference_response["status"])
+    print("RESPOSTA COMPLETA:", preference_response["response"])    
+    preference = preference_response["response"]
     link_pagamento = preference["init_point"]
     
 
