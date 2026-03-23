@@ -1,5 +1,8 @@
 from django.contrib.auth import user_logged_in
 from django.core.mail import send_mail
+import csv
+
+from django.http import HttpResponse
 
 def filtrar_produtos(produtos, filtro, preco_minimo=0, preco_maximo=1000, tamanho=None):
     if filtro:    
@@ -42,3 +45,18 @@ def enviar_email_compra(pedido):
         remetente="seuemail@gmail.com"
 
         send_mail(assunto, corpo, remetente, [email])    
+def exportar_csv( informacoes):
+    # print(informacoes.model)
+    colunas = informacoes.model._meta.fields
+    nomes_colunas = [coluna.name for coluna in colunas]
+    
+    resposta = HttpResponse(content_type="text/csv")
+    resposta["Content-Disposition"] = "attachment; filename=export.csv"
+    
+    criador_csv = csv.writer(resposta, delimiter=";")
+    
+    criador_csv.writerow(nomes_colunas)
+    # escrever as linhas do csv
+    for linha in informacoes.values_list():
+        criador_csv.writerow(linha)
+    return resposta
