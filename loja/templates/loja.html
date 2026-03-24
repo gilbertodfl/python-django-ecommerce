@@ -4,99 +4,265 @@
 
 {% block body %}
 
-<h3>Loja</h3>
-<div style="display: flex">
-  <div>
+<main class="principal principal--padding-b">
+  <section class="loja">
     <form method="post" action="{% url 'loja' %}">
       {% csrf_token %}
+  
+      <div class="menu__cabecalho">
+        <div class="menu__titulos">
+          <div>
+            <img
+              class="menu__icone"
+              src="{% static 'images/filter-big-1-svgrepo-com.svg' %}"
+              alt="Ícone filtrar"
+            />
+          </div>
+          <p class="menu__titulo">Filtrar</p>
+        </div>
 
-      <input
-        type="number"
-        name="preco_minimo"
-        value=
-        {% localize off %}
-          {{ minimo }}
-        {% endlocalize %}  
-        placeholder="0"
-        step="0.01"
-        min="0"
-      />
-      <input
-        type="number"
-        name="preco_maximo"
-        value=
-        {% localize off %}
-          {{ maximo }}
-        {% endlocalize %}  
-        
-        placeholder="0"
-        step="0.01"
-        min="0"
-      />
+        <p class="menu__fechar-filtro">X</p>
+      </div>
 
-      <p>Tamanho:</p>
-      {% for tamanho in tamanhos %}
-      <input
-        type="radio"
-        name="tamanho"
-        value="{{ tamanho }}"
-        id="tamanho_{{ tamanho }}"
-      />
-      <label for="tamanho_{{ tamanho }}">{{ tamanho }}</label>
-      {% endfor %}
+      <div class="menu__preco">
+        <p class="menu__subtitulo">Faixa de Preço</p>
 
-      <p>Categoria:</p>
-      {% for categoria in categorias_navegacao %}
-      <input
-        type="radio"
-        name="categoria"
-        value="{{ categoria.slug }}"
-        id="categoria_{{ categoria.slug }}"
-      />
-      <label for="{{ categoria.slug }}">{{ categoria.nome }}</label>
-      {% endfor %}
+        <div class="range_container">
+          <div class="sliders_control">
+            <input
+              id="fromSlider"
+              type="range"
+              value=0
+              min=0
+              max={% localize off %} {{ maximo }} {% endlocalize %}
+            />
+            <input
+              id="toSlider"
+              type="range"
+              value={% localize off %} {{ maximo }} {% endlocalize %} 
+              min=0
+              max={% localize off %} {{ maximo }} {% endlocalize %}
+            />
+          </div>
 
-      <p>Tipo:</p>
-      {% for tipo in tipos_navegacao %}
-      <input
-        type="radio"
-        name="tipo"
-        value="{{ tipo.slug }}"
-        id="tipo_{{ tipo.slug }}"
-      />
-      <label for="tipo.slug }}">{{ tipo.nome }}</label>
-      {% endfor %}
-      <br />
-      <button type="submit">Filtrar</button>
+          <div class="menu__controles">
+            <div class="form_control">
+              <div class="form_control_container">
+                <input
+                  class="form_control_container__time__input"
+                  type="number"
+                  id="fromInput"
+                  named="preco_minimo"
+                  value=0
+                  min=0
+                  max={% localize off %} {{ maximo }} {% endlocalize %} 
+                />
+              </div>
+              <p>até</p>
+              <div class="form_control_container">
+                <input
+                  class="form_control_container__time__input"
+                  type="number"
+                  id="toInput"
+                  name="preco_maximo"
+                  value={% localize off %} {{ maximo }} {% endlocalize %} 
+                  min=0
+                  max={% localize off %} {{ maximo }} {% endlocalize %}                 
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="menu__botao">Filtrar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu__expansivel">
+        <div class="menu__expansivel-cabecalho">
+          <p class="menu__subtitulo">Cor</p>
+        </div>
+
+        <div class="menu__expansivel-conteudo">
+          <div class="menu__cores">
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+
+            <div class="menu__cor">
+              <div class="menu__cor-quadrado"></div>
+              <div class="menu__cor-texto">Azul</div>
+              <input
+                class="menu__checkbox"
+                type="checkbox"
+                name="Azul"
+                value="Azul"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu__expansivel">
+        <div
+          class="menu__expansivel-cabecalho menu__expansivel-cabecalho--aberto"
+        >
+          <p class="menu__subtitulo">Tamanho</p>
+        </div>
+
+        <div class="menu__expansivel-conteudo">
+          <div class="menu__tamanhos">
+            {% for tamanho in tamanhos %}
+            <div class="menu__tamanho">
+              <div class="menu__tamanho-quadrado">{{tamanho}}</div>
+              <input
+                class="menu__checkbox"
+                type="radio"
+                name={{tamanho}}
+                value={{tamanho}}
+              />
+            </div>
+            {% endfor %}
+
+        </div>
+      </div>
+
+      <div class="menu__expansivel">
+        <div
+          class="menu__expansivel-cabecalho menu__expansivel-cabecalho--aberto"
+        >
+          <p class="menu__subtitulo">tipo</p>
+        </div>
+
+        <div class="menu__expansivel-conteudo">
+          <div class="menu__categorias">
+            {% for tipo in tipos_navegacao %}
+            <div class="menu__categoria">
+              <div class="menu__categoria-quadrado"></div>
+              <div class="menu__categoria-texto">{{tipo.nome}}</div>
+              <input
+                class="menu__checkbox"
+                type="radio"
+                name={{tipo}}
+                value={{tipo.slug}}
+              />
+            </div>
+          {% endfor %}
+
+
+          </div>
+        </div>
+      </div>
     </form>
-    Ordenação:
-    <ul>
-        <li><a href="#" name="menor-preco" class="item-ordernar">Preço: Menor para Maior</a></li>
-        <li><a href="#" name="maior-preco" class="item-ordernar">Preço: Maior para Menor</a></li>
-        <li><a href="#" name="mais-vendido" class="item-ordernar">Preço: Mais vendido</a></li>
-        <li><a href="#" name="mais-recente" class="item-ordernar">Preço: Novidade</a></li>
-        <li><a href="#" name="nome-asc" class="item-ordernar">Nome: A-Z</a></li>
-        <li><a href="#" name="nome-desc" class="item-ordernar">Nome: Z-A</a></li>
-    </ul>
+    <div class="produtos">
+      <div class="produtos__cabecalho">
+        <button class="produtos__cabecalho-filtrar">Filtrar</button>
 
-  </div>
-  <div>
-    {% for produto in produtos %}
-    <div class="produto">
-      <a href="{% url 'ver_produto' produto.id %}">
-        <img
-          src="{{ produto.imagem.url }}"
-          alt="{{ produto.nome }}"
-          width="200"
-          height="200"
-        />
-      </a>
-      <h4>{{ produto.nome }}</h4>
-      <p>Preço: R$ {{ produto.preco }}</p>
-      <p>Categoria: {{ produto.categoria.nome }}</p>
-      <p>Tipo: {{ produto.tipo.nome }}</p>
+        <div class="produtos__cabecalho-ordenarpor">
+          <div class="produtos__cabecalho-imgicone">
+            <img
+              class="produtos__cabecalho-icone"
+              src="{% static 'images/sort-vertical-svgrepo-com.svg' %}"
+              alt=""
+            />
+          </div>
+          <p class="produtos__subtitulo">Ordenar por:</p>
+          <select class="produtos__select" onchange="redirectToPage()">
+            <option value="">Selecione a ordenação</option>
+            <option value="maior-preco">Maior preço</option>
+            <option value="menor-preco">Menor preço</option>
+            <option value="mais-vendidos">Menor preço</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="produtos__grade">
+        {% for produto in produtos %}
+
+        <a
+          href="{% url 'ver_produto' produto.id %}"
+          class="produto"
+        >
+          <div class="produto__imagem">
+            <img
+              src="{{ produto.imagem.url }}"
+              alt="{{ produto.nome }}"
+            />
+          </div>
+
+          <div class="produto__textos">
+            <p class="produto__titulo">{{ produto.nome }}</p>
+            <div class="produto__preco">
+              <p class="produto__avista">R$ {{ produto.preco }}</p>
+            </div>
+          </div>
+        </a>
+        {%endfor%}
+      </div>
     </div>
-    {% endfor %}
-  </div>
-</div>
+  </section>
+</main>
+
 {% endblock %}

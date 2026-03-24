@@ -2,23 +2,21 @@
 {% load static %}
 
 {% block body %}
-
-
-<main class="principal">
-
-    <section class="banner-grid">
-     {% for banner in banners %}        
-      <a
-        href="{% url 'loja' %} {{banner.link_destino }}"
-        class="banner-grid__imagem"
-      >
-        <img
-          src="{{ banner.imagem.url }}"
-          alt="{{ banner.titulo }}"
-        />
-      </a>
-      {% endfor %}
-    </section>
-
-  </main>
+      <main class="principal">
+  
+        <section class="banner-grid">
+        {% for banner in banners %}
+          <a
+            href="{% url 'loja' %}{{banner.link_destino }}"
+            class="banner-grid__imagem"
+          >
+            <img
+              src="{{ banner.imagem.url }}"
+              alt="{{ banner.titulo }}"
+            />
+          </a>
+        {% endfor %}
+        </section>
+  
+      </main>       
 {% endblock %}
