@@ -1,19 +1,48 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %} {% block body %}
 
-{% block body %}
 
-<h3>Login</h3>
-{% if erro %}
-    <p style="color: red">Credenciais inválidas</p>
-{% endif %}
+<main class="principal">
+  <section class="conta">
+    {% if erro %}
+     <p style="color: red">Credenciais inválidas</p>
+    {% endif %}
+    {% if alterado %}
+        <p style="color: green">Dados salvos com sucesso.</p>
+        <a href="{% url 'fazer_logout' %}">Sair</a>
+    {% endif %}
+    <div class="conta__container">
+      <div class="checkout__titulos">
+        <p class="checkout__titulo">Login</p>
+      </div>
 
-<form method="post" action="{% url 'fazer_login' %}">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required />
-    <input type="password" name="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-</form>
-<a href="{% url 'criar_conta' %}">Não tem conta? Vamos criar</a>
-<a href="{% url 'password_reset' %}">Esqueci minha senha</a>
+       <form  class="conta__form" method="post" action="{% url 'fazer_login' %}">
+
+        {% csrf_token %}
+
+        <div class="conta__item ">
+          <label for="email">E-mail</label>
+          <input
+            name="email"
+            type="email"
+            placeholder="email"
+          />
+        </div>
+
+        <div class="conta__item">
+          <label for="senha">Senha</label>
+          <input
+            name="senha"
+            type="password"
+            placeholder="senha"
+          />
+        </div>
+
+        <button class="subtotal__botao" type="submit">Login</button>
+      </form>
+      <a href="{% url 'criar_conta' %}">Não tem conta? Vamos criar</a>
+      <a href="{% url 'password_reset' %}">Esqueci minha senha</a>
+    </div>
+  </section>
+</main>
+
 {% endblock %}

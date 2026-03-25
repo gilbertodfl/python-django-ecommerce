@@ -402,12 +402,11 @@ def fazer_login(request):
     return render(request, 'usuario/login.html', context )
 
 def criar_conta(request):
-    
+    erro = ""
     if request.user.is_authenticated:
         return redirect('loja')
     if request.method == 'POST':
         dados=request.POST.dict()
-        print('passei no post')
         if 'email' in dados and 'senha' in dados:
             email = dados.get('email')
             senha = dados.get('senha')
@@ -465,8 +464,6 @@ def criar_conta(request):
             erro = "Preencha todos os campos."
     else:
         context={"erro": erro}            
-        print( request.method)
-        print(context)
     return render(request, 'usuario/criar_conta.html', context )
 @login_required    
 def fazer_logout(request):

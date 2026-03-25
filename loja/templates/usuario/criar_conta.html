@@ -15,4 +15,56 @@
 </form>
 <a href="{% url 'fazer_login' %}">Já tem uma conta? Faça login</a>
 <a href="#">Esqueci minha senha</a>
+<main class="principal">
+    <section class="conta">
+      {% if erro %}
+       <p style="color: red">Credenciais inválidas</p>
+      {% endif %}
+      {% if alterado %}
+          <p style="color: green">Dados salvos com sucesso.</p>
+          <a href="{% url 'fazer_logout' %}">Sair</a>
+      {% endif %}
+      <div class="conta__container">
+        <div class="checkout__titulos">
+          <p class="checkout__titulo">Criar conta</p>
+        </div>
+  
+         <form  class="conta__form" method="post" action="{% url 'criar_conta' %}">
+  
+          {% csrf_token %}
+  
+          <div class="conta__item conta__item--email ">
+            <label for="email">E-mail</label>
+            <input
+              name="email"
+              type="email"
+              placeholder="email"
+            />
+          </div>
+  
+          <div class="conta__item">
+            <label for="senha">Senha</label>
+            <input
+              name="senha"
+              type="password"
+              placeholder="senha"
+            />
+          </div>
+
+          <div class="conta__item">
+            <label for="confirmacaosenha">Confirmação da Senha</label>
+            <input
+              name="confirmacaosenha"
+              type="password"
+              placeholder="senha"
+            />
+          </div>
+
+          <button class="subtotal__botao" type="submit">Criar conta</button>
+        </form>
+        <a href="{% url 'fazer_login' %}">Já tem uma conta? Faça login</a>
+        <a href="{% url 'password_reset' %}">Esqueci minha senha</a>
+      </div>
+    </section>
+  </main>
 {% endblock %}
