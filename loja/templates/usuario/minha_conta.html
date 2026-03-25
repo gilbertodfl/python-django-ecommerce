@@ -3,43 +3,99 @@
 
 {% block body %}
 
-<h3>Minha Conta</h3>
-<a href="{% url 'fazer_logout' %}">Sair</a>   
-<a href="{% url 'meus_pedidos' %}">Meus Pedidos</a>
-{% if erro%}
-    <p style="color: red;">{{ erro }}</p>
-{% endif %}
-{% if alterado %}
-    <p style="color: green;">Dados salvos com sucesso.</p>
-    <a href="{% url 'fazer_logout' %}">Sair</a>
-{% endif %}
-<form method="POST" action="{% url 'minha_conta' %}">
-    {% csrf_token %}
-    <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" value="{{ request.usuario.cliente.nome }}" required><br>
+<main class="principal">
+    <section class="conta">
+        {% if erro%}
+            <p style="color: red;">{{ erro }}</p>
+        {% endif %}
+        {% if alterado %}
+            <p style="color: green;">Dados salvos com sucesso.</p>
+            <a href="{% url 'fazer_logout' %}">Sair</a>
+        {% endif %}        
+        <div class="conta__container">
+        <div class="checkout__titulos">
+          <p class="checkout__titulo">Dados Pessoais</p>
+        </div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="{{ request.usuario.cliente.email }}" required><br>
+        <form
+          class="conta__form"
+          action="{% url 'minha_conta' %}"
+          method="post"
+        >
+          {% csrf_token %}
+          <div class="conta__item">
+            <label for="nome">Nome</label>
+            <input name="nome" type="text"
+            placeholder="Nome Completo"
+            {% if request.user.cliente.nome %}
+                value={{request.user.cliente.nome}}
+            {%endif%}
+           />
+          </div>
 
-    <label for="number">Telefone:</label>
-    <input type="text" id="telefone" name="telefone" value="{{ request.usuario.cliente.telefone }}" required><br>
+
+          <div class="conta__item conta__item--email">
+            <label for="email">E-mail</label>
+            <input name="email" type="email" 
+            placeholder="email"
+            {% if request.user.cliente.email %}
+                value={{request.user.cliente.email}}
+            {%endif%}
+            />
+          </div>
 
 
-    <button type="submit">Atualizar</button>
-</form>
-<h3>Troca de senha</h3>
-<form method="POST" action={% url 'minha_conta' %}>
-    {% csrf_token %}
-    <label for="senha_atual">Senha Atual:</label>
-    <input type="password" id="senha_atual" name="senha_atual" required><br>
- 
-    <label for="nova_senha">Nova Senha:</label>
-    <input type="password" id="nova_senha" name="nova_senha" required><br>
+          <div class="conta__item">
+            <label for="telefone">Telefone</label>
+            <input name="telefone" type="number" 
+            placeholder="telefone"
+            {% if request.user.cliente.telefone %}
+                value={{request.user.cliente.telefone}}
+            {%endif%}
+            
+            />
+          </div>
 
-    <label for="nova_senha_confirmacao">Confirmação da Nova Senha:</label>    
-    <input type="password" id="nova_senha_confirmacao" name="nova_senha_confirmacao" required><br>
-    
-    <button type="submit">Salvar Senha</button>
-</form>
+          <button class="subtotal__botao" type="submit">
+            Salvar alterações
+          </button>
+        </form>
+      </div>
+      <div class="conta__container">
+        <div class="checkout__titulos">
+          <p class="checkout__titulo">Alterar senha</p>
+        </div>
+
+        <form
+          class="conta__form"
+          action="{% url 'minha_conta' %}"
+
+          method="post"
+        >
+        {% csrf_token %}
+          <div class="conta__item">
+            <label for="senha_atual">Senha atual</label>
+            <input name="senha_atual" type="password" />
+          </div>
+          <br>
+          <div style="display: flex; flex-direction: column; width: 100%; gap: 16px;">            
+            <div class="conta__item">
+                <label for="nova_senha">Nova senha</label>
+                <input name="nova_senha" type="password" required/>
+            </div>
+        
+            <div class="conta__item">
+                <label for="nova_senha_confirmacao">Confirmação da senha</label>
+                <input name="nova_senha_confirmacao" type="password" required/>
+            </div>
+        </div>
+
+          <button class="subtotal__botao" type="submit">
+            Salvar alterações
+          </button>
+        </form>
+      </div>      
+    </section>
+  </main>
 
 {% endblock %}

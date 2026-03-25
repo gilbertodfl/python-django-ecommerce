@@ -331,7 +331,10 @@ def minha_conta(request):
     cliente = request.user.cliente
     erro = None
     alterado = False
+    print('passei em minha conta')
+    print( cliente )
     if request.method == 'POST':
+        print('ENTREI NO POST')
         dados = request.POST.dict()
         email = dados.get('email')
         ## aqui está trocando dados e não senha
@@ -375,7 +378,7 @@ def minha_conta(request):
             request.user.save()
             alterado = True
     context = {"alterado": alterado}
-
+    print('passei como GET')
     return render(request, 'usuario/minha_conta.html', context )
 
 def fazer_login(request):
