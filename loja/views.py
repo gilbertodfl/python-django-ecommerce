@@ -383,6 +383,7 @@ def minha_conta(request):
 
 def fazer_login(request):
     erro = False
+    
     if request.user.is_authenticated:
         return redirect('loja')
     if request.method == 'POST':
@@ -391,12 +392,16 @@ def fazer_login(request):
             email = dados.get('username')
             senha = dados.get('password')
             usuario = authenticate(request, username=email, password=senha)
+
             if usuario:
+                print('vamos para loja')
                 login(request, usuario)
                 return redirect('loja')
             else:
+                print('nao achei o usuario')
                 erro = True
         else:
+            print('nao achei o username e password')
             erro = True
     context = { "erro:": erro}
     return render(request, 'usuario/login.html', context )
@@ -477,6 +482,7 @@ def meus_pedidos(request):
     context = {
         'pedidos': pedidos
     }
+    print( pedidos )
     return render( request, 'usuario/meus_pedidos.html', context)
 
 @login_required

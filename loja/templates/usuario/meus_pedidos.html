@@ -1,25 +1,59 @@
-{% extends 'base.html' %}
-{% load static %}
-
+{% extends 'base.html' %} 
+{% load static %} 
 {% block body %}
 
-<h3>Meus Pedidos</h3>
-    <a href="{% url 'minha_conta' %}">Minha conta</a>
-    <ul>
-        {% for pedido in pedidos %}
-            <li>
-                Pedido #{{ pedido.id }} - {{ pedido.data_finalizacao }} - transacao: - {{ pedido.codigo_transacao }} - Total: R$ {{ pedido.preco_total }} - Status:  {% if pedido.finalizado %}FINALIZADO{% else %}PENDENTE{% endif %}
-                <p>Endereço: {{ pedido.endereco }}</p>
-                <p>Itens:</p>
-                <ul>
-                    {% for item in pedido.itens_pedido %}
-                        <img src={{ item.item_estoque.produto.imagem.url }} alt="{{ item.item_estoque.produto.nome }}" width="50" height="50">
-                        <li>{{ item.item_estoque.produto.nome }} - Quantidade: {{ item.quantidade }} - Preço: R$ {{ item.preco_total }}</li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% empty %}
-            <li>Você ainda não fez nenhum pedido.</li>
-        {% endfor %}
+
+<main class="principal">
+    <section class="conta">
+      <div class="conta__container">
+            <div class="checkout__titulos">
+                <p class="checkout__titulo">Meus pedidos</p>
+            </div>
+            {% for pedido in pedidos %}
+               <div class="pedido">
+                    <div class="pedido__cabecalho">
+                        <div>
+                        <p><b>Data do pedido</b></p>
+                        <p>{{ pedido.data_finalizacao }}</p>
+                        </div>
+
+                        <div>
+                        <p><b>Total</b></p>
+                        <p>R$ {{ pedido.preco_total }}</p>
+                        </div>
+
+                        <div>
+                        <p><b>Número do pedido</b></p>
+                        <p>{{pedido.id }}</p>
+                        </div>
+                        <div>
+                            <p><b>Número Transação</b></p>
+                            <p> {{pedido.codigo_transacao }}</p>
+                        </div>            
+                    </div>
+
+                    <div class="pedido__corpo">
+                      {% for item in pedido.itens_pedido %}
+                        <div class="tabela__imagem">
+                            <img
+                                src="{{ item.item_estoque.produto.imagem.url}}"
+                                alt="{{ item.item_estoque.produto.nome      }}"
+                            />
+                        </div>
+                        <div class="tabela__produto-textos">
+                            <p><b>{{item.item_estoque.produto.nome}}</b></p>
+                            <p><b>Quantidade: {{ item.quantidade }}</b> GG</p>
+                            <p><b>Preço: R$ {{ item.preco_total }}</b> Branco</p>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <p>Endereço: {{ pedido.endereco.cep }}{{ pedido.endereco.cidade }}-{{pedido.endereco.uf }} </p>
+               </div>
+            {%endfor%}
+    
+      </div>
+    </section>
+</main>
 
 {% endblock %}
+
