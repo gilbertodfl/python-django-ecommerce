@@ -129,8 +129,9 @@ def adicionar_carrinho(request, id_produto):
                 print('novo item no pedido')
                 itens_pedido.quantidade = 1
             itens_pedido.save()
-        resposta = redirect('loja')
-        return resposta
+        #resposta = redirect('loja')
+        #return resposta
+        return redirect('carrinho')
     else:
         return redirect('loja')
     
@@ -139,6 +140,7 @@ def remover_carrinho(request, id_produto):
         dados = request.POST.dict()
         tamanho = dados.get('tamanho')
         id_cor = dados.get('id_cor')
+        print(f'remover produto:{id_produto} tamanho  {tamanho}, cor {id_cor}')
         if request.user.is_authenticated:   
             cliente = request.user.cliente
           
@@ -157,7 +159,7 @@ def remover_carrinho(request, id_produto):
             item_estoque = ItemEstoque.objects.get(produto__id=id_produto, cor__id=id_cor, tamanho=tamanho)
         except ItemEstoque.DoesNotExist:
             return redirect('carrinho')
-        print( 'item em estoque', item_estoque)
+        
         if item_estoque :
             item_pedido, criado = ItensPedido.objects.get_or_create(pedido=pedido, item_estoque=item_estoque)
             item_pedido.quantidade -= 1
