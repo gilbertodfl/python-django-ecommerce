@@ -67,6 +67,7 @@ TEMPLATES = [
                 'loja.novos_context.carrinho',
                 'loja.novos_context.categorias_tipos',
                 'loja.novos_context.faz_parte_equipe',
+                'loja.novos_context.categorias_tipos',                
             ],
         },
     },

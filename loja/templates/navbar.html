@@ -18,44 +18,38 @@
         />
       </a>
 
-      <nav class="cabecalho__navegacao">
-        <ul class="cabecalho__lista">
-          {% for categoria in categorias_navegacao %}            
-              <a
-                class="cabecalho__link"
-                href="{% url 'loja' categoria.slug %}"
-                >{{ categoria.nome }}</a
-              >
-
-              <div class="cabecalho__expansao-tipos">
+      <ul class="cabecalho__lista">
+        {% for categoria in categorias_navegacao %}
+        <li>  {# ← cada categoria é um <li> #}
+            <a class="cabecalho__link" href="{% url 'loja' categoria.slug %}">
+                {{ categoria.nome }}
+            </a>
+      
+            <div >
                 <ul class="cabecalho__lista cabecalho__lista--tipo">
-                  {% for tipo in tipos_navegacao %}
+                    {% for tipo in tipos_navegacao %}
                     <li>
-                      <a
-                          class="cabecalho__link cabecalho__link--tipo"
-                          href="{% url 'loja' categoria.slug|add:'-'|add:tipo.slug %}"
-                          >{{ tipo.nome }}</a
-                      >
-                  </li>
-                {% endfor %}
-                
-                </li>
-              </div>
-            {% endfor %}
-          </ul>
-
-          
+                       <a class="cabecalho__link cabecalho__link--tipo"
+                            href="{% url 'loja' categoria.slug|add:'-'|add:tipo.slug %}"
+                        >{{ tipo.nome }}</a>
+                    </li>
+                    {% endfor %}
+                    <li>teste</li>
+                </ul>
+            </div>
+        </li>  {# ← fecha o <li> da categoria #}
+        {% endfor %}
+      </ul>
       </nav>
     </div>
 
     <div class="cabecalho__icones">
       <div class="cabecalho__icone-login">
-        <!-- Para trocar o ícone basta adicionar a classe 'cabecalho__link-icone--logado' na âncora abaixo -->
-        {% if request.user.is_authenticated %} 
+        {% if request.user.is_authenticated %}
             <a class="cabecalho__link-icone cabecalho__link-icone--logado" href="javascript: void(0)">
-        {%else%}                
+        {% else %}
             <a class="cabecalho__link-icone" href="{% url 'fazer_login' %}">
-        {% endif %}                
+        {% endif %}
           <svg class="cabecalho__icone" xmlns="http://www.w3.org/2000/svg">
             <path
               fill-rule="evenodd"
@@ -75,9 +69,8 @@
           </svg>
         </a>
 
-        <!-- Para exibir o menu do perfil, basta adicionar a classe 'cabecalho__informacoes-perfil--aberto' na div abaixo -->
         <div class="cabecalho__informacoes-perfil">
-          <p class="cabecalho__texto">Olá, <span>{{request.user.cliente.nome}}</span>!</p>
+          <p class="cabecalho__texto">Olá, <span>{{ request.user.cliente.nome }}</span>!</p>
           <a
             class="cabecalho__link cabecalho__link--perfil"
             href="{% url 'minha_conta' %}"
@@ -98,8 +91,8 @@
             class="cabecalho__link cabecalho__link--perfil"
             href="{% url 'gerenciar_loja' %}"
             >Gerenciar Loja</a
-          >     
-          {% endif %}     
+          >
+          {% endif %}
           <hr />
           <a class="cabecalho__link cabecalho__link--perfil" href="{% url 'fazer_logout' %}">Sair</a>
         </div>

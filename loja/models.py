@@ -22,7 +22,7 @@ class Tipo(models.Model): # Tipos (Camisa, Camiseta, Bermuda, Calça)
     nome = models.CharField(max_length=200, null=True, blank=True)
     slug = models.CharField(max_length=100, null=True, blank=True) # Exemplo: 
     def __str__(self):
-        return str(self.nome)
+        return f"{self.nome},  {self.slug}"
 
 class Produto(models.Model):
     imagem =  models.ImageField(null=True, blank=True) # "camisa.png"
