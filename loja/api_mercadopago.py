@@ -41,7 +41,7 @@ def criar_pagamento( itens_pedido, link):
         preference_data["auto_return"] = "all"    
     preference_response = sdk.preference().create(preference_data)
     print("STATUS:", preference_response["status"])
-    print("RESPOSTA COMPLETA:", preference_response["response"])    
+    #print("RESPOSTA COMPLETA:", preference_response["response"])    
     preference = preference_response["response"]
     link_pagamento = preference["init_point"]
     
@@ -49,7 +49,7 @@ def criar_pagamento( itens_pedido, link):
     ##id_pagamento=link_pagamento["response"]["id"]
 
 
-    print(preference_response["status"])        # ex: 201
+    print('http status: ',preference_response["status"])        # ex: 201
     ##print(preference_response["response"])      # dict com os dados
 
     id_pagamento = preference_response["response"]["id"]

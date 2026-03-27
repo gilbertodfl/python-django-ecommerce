@@ -209,7 +209,7 @@ def finalizar_compra(request, id_pedido):
 
         total = dados.get("total")
         pedido = Pedido.objects.get(id=id_pedido)
-
+        print(' entrei no post com id: ', id_pedido)
         if Decimal(total.replace(",", ".")) != pedido.preco_total:            
             print( 'total:', total, 'preco_total:', pedido.preco_total)
             erro = "preco"
