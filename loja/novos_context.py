@@ -38,6 +38,7 @@ def categorias_tipos(request):
     from .models import Categoria, Tipo
     categorias_navegacao = Categoria.objects.all()
     tipos_navegacao = Tipo.objects.all()
+    print(tipos_navegacao)
     return {'categorias_navegacao': categorias_navegacao, 'tipos_navegacao': tipos_navegacao}
 def faz_parte_equipe(request):
     equipe=False

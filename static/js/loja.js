@@ -3,10 +3,12 @@ function redirectToPage() {
     var selectElement = document.getElementsByClassName('produtos__select')[0];
     var selectedOption = selectElement.options[selectElement.selectedIndex].value;
     if (selectedOption) {
-      window.location.href = selectedOption;
+        var url = new URL(window.location.href);
+        url.searchParams.set('ordem', selectedOption);
+        window.location.href = url.toString();
+        // Gera: /loja/infantil/?ordem=maior-preco ✓
     }
-  }
-
+}
 // Scripts do Menu Lateral
 
 var checkboxes = document.querySelectorAll('.menu__tamanho .menu__checkbox');
